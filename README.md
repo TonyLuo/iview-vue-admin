@@ -2,6 +2,15 @@
 
 > iView Vue Admin
 
+
+## 效果:
+- [https://tonyluo.github.io/iview-vue-admin](https://tonyluo.github.io/iview-vue-admin)
+
+![image](https://github.com/TonyLuo/iview-vue-admin/blob/master/gifs/iadmin.gif)
+
+
+**本项目可用做管理后台UI模版。**
+
 ## Build Setup
 
 ``` bash
@@ -18,17 +27,6 @@ npm run build
 npm run build --report
 ```
 
-
-**本项目可用做管理后台UI模版。**
-
-
-**该项目为基于iview@2.4.1版本开发集成的模板，部分代码来源于iview官网例子**
-
-## 效果:
-- [https://tonyluo.github.io/iview-vue-admin](https://tonyluo.github.io/iview-vue-admin)
-
-![image](https://github.com/TonyLuo/iview-vue-admin/blob/master/gifs/iadmin.gif)
-
 ## Links
 
 - [Vue](https://github.com/vuejs/vue)
@@ -37,5 +35,7 @@ npm run build --report
 
 ## License
 [MIT](http://opensource.org/licenses/MIT)
+
+该项目为基于iview@2.X版本开发集成的模板，部分代码来源于iview官网例子
 
 Copyright (c) 2017-present, Tony Luo
