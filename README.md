@@ -25,7 +25,7 @@ npm run build --report
 **该项目为基于iview@2.4.1版本开发集成的模板，部分代码来源于iview官网例子**
 
 ## 效果:
-** https://tonyluo.github.io/iview-vue-admin (https://tonyluo.github.io/iview-vue-admin) **
+** [https://tonyluo.github.io/iview-vue-admin] (https://tonyluo.github.io/iview-vue-admin) **
 ![image](https://github.com/TonyLuo/iview-vue-admin/blob/master/gifs/iadmin.gif)
 
 ## Links
