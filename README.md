@@ -30,4 +30,4 @@ Sample:
 ## License
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2016-present, Tony Luo
+Copyright (c) 2017-present, Tony Luo
