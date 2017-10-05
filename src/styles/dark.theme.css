@@ -1,0 +1,114 @@
+/*
+refer to http://stevesanderson.github.io/fixed-height-layouts-demo/two-columns.html
+*/
+
+body {
+  font-family: 'Helvetica Neue', Arial, Sans-Serif;
+}
+
+.header, .footer {
+  color: #eee;
+  background: #696f77;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  padding: 0 0.5em;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #696f77), color-stop(100%, #28343b));
+  background: -webkit-linear-gradient(top, #696f77 0%, #28343b 100%);
+  background: -ms-linear-gradient(top, #696f77 0%, #28343b 100%);
+}
+
+
+
+.body, .pane {
+  background: #ddd
+}
+
+/*.right.col { border-left: 1px solid black; }*/
+.right.col .body {
+  padding: 0 1em;
+  background: #fff
+}
+
+.left.col .body {
+  background: #495060;
+}
+
+.listview {
+  padding: 0;
+  margin: 0;
+  font-weight: bold;
+  color: #444;
+}
+
+.listview li {
+  list-style-type: none;
+  background: #eee;
+  padding: 1em;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #fff;
+  cursor: pointer;
+}
+
+.listview li.selected {
+  background-color: #37F;
+  color: White;
+}
+
+.listview.inset {
+  margin: 1em 0;
+}
+
+.listview.inset li {
+  background: white;
+  border: 2px solid #aaa;
+  border-bottom-width: 0;
+}
+
+.listview.inset li:first-child {
+  border-radius: 1em 1em 0em 0em
+}
+
+.listview.inset li:last-child {
+  border-radius: 0em 0em 1em 1em;
+  border-bottom-width: 2px;
+}
+
+.tiles {
+  overflow-y: hidden;
+}
+
+.tiles > ul {
+  width: 1175px;
+}
+
+.tiles ul {
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.tiles li {
+  list-style-type: none;
+  display: inline-block;
+  background-color: #080;
+  width: 150px;
+  height: 150px;
+  padding: 1em;
+  color: White;
+  margin: 5px;
+  font-weight: bold;
+  zoom: 1;
+  *display: inline;
+}
+
+button {
+  display: block;
+  border: 2px solid #aaa;
+  line-height: normal;
+  background-color: White;
+  border-radius: 8px;
+  margin: 8px 0;
+  cursor: pointer;
+  padding: 5px 20px;
+  font-weight: bold;
+  color: #333;
+}

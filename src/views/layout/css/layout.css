@@ -1,0 +1,115 @@
+/* Generic layout rules
+*/
+body {
+  margin: 0;
+  -webkit-text-size-adjust: 100%;
+}
+
+.page {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.row, .col, .page {
+  overflow: hidden;
+  position: absolute;
+}
+
+.row {
+  left: 0;
+  right: 0;
+}
+
+.col {
+  top: 0;
+  bottom: 0;
+}
+.left.col {
+  width: 200px;
+}
+
+.right.col {
+  left: 200px;
+  right: 0;
+}
+
+.header.row {
+  height: 40px;
+  line-height: 40px;
+}
+.header {
+  font-size: 1.4em;
+}
+
+.body.row {
+  top: 75px;
+  bottom: 0;
+}
+
+/*.footer.row {*/
+  /*height: 40px;*/
+  /*bottom: 0;*/
+  /*line-height: 40px;*/
+  /*!*opacity:0.7;*!*/
+  /*!*filter:Alpha(opacity=70); !* IE8 以及更早的浏览器 *!*!*/
+/*}*/
+.floating-right {
+  float: right;
+  transform: rotate(90deg);
+}
+
+.text-alight-left {
+  text-align: left;
+}
+
+.text-alight-center {
+  float: none;
+  text-align: center;
+}
+
+.layout-tabs {
+  float: left;
+  padding: 5px 5px 0px 1em;
+}
+
+.layout-breadcrumb {
+  float: right;
+  padding: 5px 15px 0;
+}
+
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-y {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fill, .pane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%
+}
+
+.pane {
+  display: none;
+}
+
+/* Workaround: in landscape mode, IEMobile makes bottom toolbar overlap the page, so shorten the page by 75px to compensate */
+.iemobile .page {
+  bottom: -6px;
+}
+
+@media screen and (orientation: landscape) {
+  .iemobile .page {
+    bottom: 75px;
+  }
+}

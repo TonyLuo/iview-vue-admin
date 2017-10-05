@@ -1,0 +1,10 @@
+.align-middle {
+  position: relative;
+  top: 50%;
+  text-align: center;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
