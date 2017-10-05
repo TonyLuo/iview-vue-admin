@@ -12,16 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:TonyLuo/i-admin.git"
+    "url": "git@github.com:TonyLuo/iview-vue-admin.git"
   },
-  "homepage": "https://github.com/TonyLuo/i-admin",
+  "homepage": "https://github.com/TonyLuo/iview-vue-admin",
   "keywords": [
     "vue",
     "iview",
     "element",
     "ui",
     "admin",
+    "vue admin",
     "管理",
+    "后台",
+    "管理后台",
     "后台模板"
   ],
   "license": "MIT",

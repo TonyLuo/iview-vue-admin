@@ -1,4 +1,4 @@
-# i-admin
+# iview-vue-admin
 
 > iView Admin
 
