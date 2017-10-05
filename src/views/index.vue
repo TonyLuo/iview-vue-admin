@@ -1,9 +1,11 @@
 <template>
   <span>
     <div class="left col" :style="{width: hideSidebarText?'60px':'200px'}">
-      <div class="header row" style="text-align: center" @click="toggleClick">
-        <span v-if="!hideSidebarText">Navigation</span>
-        <span :class="[hideSidebarText ? 'text-alight-center' : 'floating-right']">
+      <div class="header row " style="text-align: center">
+        <a v-if="!hideSidebarText" href="https://github.com/TonyLuo/iview-vue-admin" style="color: white">
+          <Icon type="social-github" size="24"></Icon>
+        </a>
+        <span :class="[hideSidebarText ? 'text-alight-center' : 'floating-right']" @click="toggleClick">
             <Icon type="navicon" size="30" color="white"></Icon>
         </span>
       </div>
@@ -12,7 +14,7 @@
         <sidebar :hide-sidebar-text="hideSidebarText" theme="dark"></sidebar>
       </div>
       <!--<div class="footer row">-->
-        <!--&lt;!&ndash;<img style="height: 40px"  src="static/assets/img/logo.png">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img style="height: 40px"  src="static/assets/img/logo.png">&ndash;&gt;-->
       <!--</div>-->
     </div>
     <div class="right col" :style="{left: hideSidebarText?'60px':'200px'}">
@@ -24,7 +26,7 @@
         <router-view></router-view>
       </div>
       <!--<div class="footer row">-->
-        <!--Some status text here-->
+      <!--Some status text here-->
       <!--</div>-->
     </div>
     <BackTop></BackTop>

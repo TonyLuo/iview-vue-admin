@@ -2,13 +2,12 @@
 
 > iView Vue Admin
 
-## 效果:
+## Live Demo:
 - [https://tonyluo.github.io/iview-vue-admin](https://tonyluo.github.io/iview-vue-admin)
 
 ![image](https://github.com/TonyLuo/iview-vue-admin/blob/master/gifs/iadmin.gif)
 
 
-**本项目可用做管理后台UI模版。**
 
 ## Build Setup
 
@@ -35,6 +34,6 @@ npm run build --report
 ## License
 [MIT](http://opensource.org/licenses/MIT)
 
-该项目为基于iview@2.X版本开发集成的模板，部分代码来源于iview官网例子
+This project is built base on iview@2.x, some code is from the iview official demo
 
 Copyright (c) 2017-present, Tony Luo
