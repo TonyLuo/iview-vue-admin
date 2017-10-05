@@ -16,6 +16,7 @@
   export default {
     data () {
       return {
+        page: 1,
         pageSize: 10,
         tableData1: this.mockTableData1(),
         tableColumns1: [
@@ -112,7 +113,7 @@
     },
     methods: {
       mockTableData1 () {
-        console.log('mockTableData1',this.pageSize)
+        console.log('mockTableData ',this.pageSize, this.page)
         let data = []
         for (let i = 0; i < this.pageSize; i++) {
           data.push({
@@ -148,17 +149,22 @@
         return y + '-' + m + '-' + d
       },
       changePage (page) {
-        console.log(page)
+        console.log('changePage',page)
+        this.page = page
         // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
         this.tableData1 = this.mockTableData1()
       },
       changePageSize(size){
-        console.log(size)
+        console.log('changePageSize', size)
         this.pageSize = size;
         this.tableData1 = this.mockTableData1()
 
 
       }
+    },
+    mounted(){
+      this.tableData1 = this.mockTableData1()
+
     }
   }
 </script>
