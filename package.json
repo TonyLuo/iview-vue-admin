@@ -1,7 +1,7 @@
 {
   "name": "i-admin",
   "version": "1.0.0",
-  "description": "iView Admin",
+  "description": "Vue Admin Template bases on iView",
   "author": "Tony <luozhuming@gmail.com>",
   "private": true,
   "scripts": {
@@ -10,6 +10,21 @@
     "build": "node build/build.js",
     "lint": "eslint --ext .js,.vue src"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:TonyLuo/i-admin.git"
+  },
+  "homepage": "https://github.com/TonyLuo/i-admin",
+  "keywords": [
+    "vue",
+    "iview",
+    "element",
+    "ui",
+    "admin",
+    "管理",
+    "后台模板"
+  ],
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.16.2",
     "echarts": "^3.7.2",

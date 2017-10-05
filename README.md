@@ -20,4 +20,14 @@ npm run build --report
 
 Sample:
 ![image](https://github.com/TonyLuo/i-admin/blob/master/gifs/iadmin.gif)
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Links
+
+- [Vue](https://github.com/vuejs/vue)
+- [Webpack](https://github.com/webpack/webpack)
+- [iView](https://github.com/iview/)
+
+## License
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2016-present, Tony Luo
