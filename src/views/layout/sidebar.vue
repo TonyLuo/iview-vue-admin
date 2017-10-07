@@ -8,7 +8,7 @@
         :theme="theme"
         :class="{'hide-sidebard-text': hideSidebarText}">
     <slot name="top" :class="slotTopClass"></slot>
-    <template v-for="item in $store.state.layout.menuList">
+    <template v-for="item in menuList">
       <MenuItem v-if="!item.children" :name="item.name" :key="item.path">
         <Icon :type="item.icon" :size="iconSize" :key="item.path"></Icon>
         <span class="sidebar-menu-text" :key="item.path">{{ item.title }}</span>
@@ -55,6 +55,9 @@
     computed: {
       iconSize () {
         return 14
+      },
+      menuList(){
+        return this.$store.state.layout.menuList.slice()
       }
     },
     watch: {

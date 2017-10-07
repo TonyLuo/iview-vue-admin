@@ -4,7 +4,7 @@
         @on-tab-remove="handleTabRemove"
         @on-click="linkTo"
         v-model="currentPageName">
-    <TabPane :label="item.title" v-for="(item,index)  in $store.state.layout.pageOpenedList"
+    <TabPane :label="item.title" v-for="(item,index)  in itemList"
              :name="item.name"
              :key="item.name">
     </TabPane>
@@ -25,6 +25,11 @@
     data () {
       return {
         currentPageName: ''
+      }
+    },
+    computed: {
+      itemList () {
+        return this.$store.state.layout.pageOpenedList.slice()
       }
     },
     watch: {

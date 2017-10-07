@@ -25,8 +25,8 @@ const actions = {
   initial ({dispatch, commit, state}, data) {
     dispatch('initLayout').then(() => {
       dispatch('setMenuList').then(() => {
-        dispatch('setTabList').then(()=>{
-          commit(types.SET_LAYOUT_STATUS,true)
+        dispatch('setTabList').then(() => {
+          commit(types.SET_LAYOUT_STATUS, true)
         })
       })
     })
@@ -42,7 +42,39 @@ const actions = {
     commit(types.SET_TAB_LIST)
   },
   setCurrentPath ({dispatch, commit, state}, currentPageName) {
-    commit(types.SET_CURRENT_PATH, currentPageName)
+    let currentPath = []
+    let openedMenuList = state.menuList.filter(menu => {
+      if (!menu.children) {
+        return menu.name === currentPageName
+      }
+      else {
+        return menu.children.some((child) => {
+          if (child.name === currentPageName) {
+            currentPath.push(child)
+          }
+
+          return child.name === currentPageName
+        })
+      }
+    })
+
+    if (openedMenuList[0] && openedMenuList[0].name !== 'home') {
+      let currentNode = {
+        title: openedMenuList[0].title,
+        // breadcrumb should not show hyperlink if the current node is the parent node
+        path: openedMenuList[0].children ? '' : openedMenuList[0].path,
+        name: openedMenuList[0].name
+      }
+      currentPath.push(currentNode)
+    }
+
+    commit(types.SET_CURRENT_PATH, currentPath.reverse())
+
+    let openedMenuNameList = openedMenuList.map(item => {
+      return item.name
+    })
+
+    commit(types.SET_OPENED_MENU_LIST, openedMenuNameList)
   },
 
   openTab ({dispatch, commit, state}, menuName) {
@@ -70,45 +102,16 @@ const mutations = {
       }
     })
   },
-  [types.SET_CURRENT_PATH] (state, currentPageName) {
-    let currentPath = []
-    let openedMenuList = state.menuList.filter(menu => {
-      if (!menu.children) {
-        return menu.name === currentPageName
-      }
-      else {
-        return menu.children.some((child) => {
-          if (child.name === currentPageName) {
-            currentPath.push(child)
-          }
+  [types.SET_CURRENT_PATH] (state, currentPath) {
 
-          return child.name === currentPageName
-        })
-      }
-    })
+    state.currentPath = currentPath
 
-    if (openedMenuList[0] && openedMenuList[0].name !== 'home') {
-      let currentNode = {
-        title: openedMenuList[0].title,
-        // breadcrumb should not show hyperlink if the current node is the parent node
-        path: openedMenuList[0].children ? '' : openedMenuList[0].path,
-        name: openedMenuList[0].name
-      }
-      currentPath.push(currentNode)
-    }
-    currentPath.push({
-      title: '首页',
-      path: '/',
-      name: 'home'
-    })
-    state.currentPath = currentPath.reverse()
-
-    state.openedMenuNameList = openedMenuList.map(item => {
-      return item.name
-    })
 
   },
 
+  [types.SET_OPENED_MENU_LIST] (state, openedMenuNameList) {
+    state.openedMenuNameList = openedMenuNameList
+  },
   [types.OPEN_TAB] (state, menuName) {
     let tabOpened = state.pageOpenedList.some(item => {
       return item.name === menuName
@@ -127,7 +130,7 @@ const mutations = {
     })
   },
   [types.SET_LAYOUT_STATUS] (state, status) {
-    state.ready = status;
+    state.ready = status
 
   },
   [types.INIT_LAYOUT] (state, name) {

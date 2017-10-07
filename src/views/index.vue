@@ -29,7 +29,6 @@
       <!--Some status text here-->
       <!--</div>-->
     </div>
-    <BackTop></BackTop>
 
   </span>
 

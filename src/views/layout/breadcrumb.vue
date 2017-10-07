@@ -1,7 +1,7 @@
 <template>
   <Breadcrumb>
     <BreadcrumbItem
-      v-for="item in $store.state.layout.currentPath"
+      v-for="item in currentPath"
       :href="item.path"
       :key="item.name">
       {{item.title}}
@@ -19,7 +19,12 @@
     props: {},
     data () {
       return {}
-    }
+    },
+    computed: {
+      currentPath () {
+        return this.$store.state.layout.currentPath.slice()
+      }
+    },
 
   }
 </script>
