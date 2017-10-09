@@ -1,17 +1,21 @@
 <template>
-  <span>
-    <Table :data="tableData1" :columns="tableColumns1" stripe></Table>
-    <div style="margin: 10px;overflow: hidden">
-      <div style="float: right;">
-        <Page :total="100" :current="1"
-              @on-change="changePage"
-              @on-page-size-change ="changePageSize"
-              show-total show-sizer></Page>
-      </div>
+
+  <Table :data="tableData1" :columns="tableColumns1" stripe>
+    <div  slot="footer" style="padding-left:5px">
+      <Page :total="100" :current="1"
+            size="small"
+            placement="top"
+            @on-change="changePage"
+            @on-page-size-change="changePageSize"
+            show-elevator show-total show-sizer></Page>
     </div>
-  </span>
+  </Table>
+
 
 </template>
+<style>
+
+</style>
 <script>
   export default {
     data () {
@@ -113,7 +117,7 @@
     },
     methods: {
       mockTableData1 () {
-        console.log('mockTableData ',this.pageSize, this.page)
+        console.log('mockTableData ', this.pageSize, this.page)
         let data = []
         for (let i = 0; i < this.pageSize; i++) {
           data.push({
@@ -149,20 +153,19 @@
         return y + '-' + m + '-' + d
       },
       changePage (page) {
-        console.log('changePage',page)
+        console.log('changePage', page)
         this.page = page
         // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
         this.tableData1 = this.mockTableData1()
       },
-      changePageSize(size){
+      changePageSize (size) {
         console.log('changePageSize', size)
-        this.pageSize = size;
+        this.pageSize = size
         this.tableData1 = this.mockTableData1()
-
 
       }
     },
-    mounted(){
+    mounted () {
       this.tableData1 = this.mockTableData1()
 
     }
