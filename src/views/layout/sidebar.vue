@@ -9,9 +9,9 @@
         :class="{'hide-sidebard-text': hideSidebarText}">
     <slot name="top" :class="slotTopClass"></slot>
     <template v-for="item in menuList">
-      <MenuItem v-if="!item.children" :name="item.name" :key="item.path">
+      <MenuItem v-if="!item.children" :name="item.name" :key="item.name">
         <Icon :type="item.icon" :size="iconSize" :key="item.path"></Icon>
-        <span class="sidebar-menu-text" :key="item.path">{{ item.title }}</span>
+        <span class="sidebar-menu-text" :key="item.name">{{ item.title }}</span>
       </MenuItem>
 
       <Submenu :name="item.name" v-if="item.children && item.children.length > 0" :key="item.path">

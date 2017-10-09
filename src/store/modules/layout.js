@@ -36,10 +36,19 @@ const actions = {
     commit(types.INIT_LAYOUT)
   },
   setMenuList ({dispatch, commit, state}, data) {
-    commit(types.SET_MENU_LIST)
+    // TODO filter menuList according to the user role
+    commit(types.SET_MENU_LIST, appRouter.slice())
   },
   setTabList ({dispatch, commit, state}, data) {
-    commit(types.SET_TAB_LIST)
+    let tabList = []
+    state.menuList.map((item) => {
+      if (item.children) {
+        tabList.push(...item.children)
+      } else {
+        tabList.push(item)
+      }
+    })
+    commit(types.SET_TAB_LIST, tabList)
   },
   setCurrentPath ({dispatch, commit, state}, currentPageName) {
     let currentPath = []
@@ -78,41 +87,6 @@ const actions = {
   },
 
   openTab ({dispatch, commit, state}, menuName) {
-    commit(types.OPEN_TAB, menuName)
-  },
-  removeTab ({dispatch, commit, state}, name) {
-    commit(types.REMOVE_TAB, name)
-  }
-}
-
-// mutations
-const mutations = {
-  [types.SET_MENU_LIST] (state, list) {
-    // clear menuList
-    // TODO filter menuList according to the user role
-    state.menuList = []
-    state.menuList = appRouter.slice()
-  },
-  [types.SET_TAB_LIST] (state) {
-    state.menuList.map((item) => {
-      if (item.children) {
-        state.tabList.push(...item.children)
-      } else {
-        state.tabList.push(item)
-      }
-    })
-  },
-  [types.SET_CURRENT_PATH] (state, currentPath) {
-
-    state.currentPath = currentPath
-
-
-  },
-
-  [types.SET_OPENED_MENU_LIST] (state, openedMenuNameList) {
-    state.openedMenuNameList = openedMenuNameList
-  },
-  [types.OPEN_TAB] (state, menuName) {
     let tabOpened = state.pageOpenedList.some(item => {
       return item.name === menuName
     })
@@ -120,14 +94,41 @@ const mutations = {
       let tab = state.tabList.filter((item) => {
         return menuName === item.name
       })[0]
-      state.pageOpenedList.push(tab)
+      commit(types.OPEN_TAB, tab)
+
     }
   },
-
-  [types.REMOVE_TAB] (state, name) {
-    state.pageOpenedList = state.pageOpenedList.filter(item => {
+  removeTab ({dispatch, commit, state}, name) {
+    let pageOpenedList = state.pageOpenedList.filter(item => {
       return item.name !== name
     })
+    commit(types.SET_OPENED_TAB_LIST, pageOpenedList)
+  }
+}
+
+// mutations
+const mutations = {
+  [types.SET_MENU_LIST] (state, list) {
+    state.menuList = list
+  },
+  [types.SET_TAB_LIST] (state, tabList) {
+    state.tabList.push(...tabList)
+
+  },
+  [types.SET_CURRENT_PATH] (state, currentPath) {
+    state.currentPath = currentPath
+  },
+
+  [types.SET_OPENED_MENU_LIST] (state, openedMenuNameList) {
+    state.openedMenuNameList = openedMenuNameList
+  },
+  [types.OPEN_TAB] (state, tab) {
+    state.pageOpenedList.push(tab)
+
+  },
+
+  [types.SET_OPENED_TAB_LIST] (state, pageOpenedList) {
+    state.pageOpenedList = pageOpenedList
   },
   [types.SET_LAYOUT_STATUS] (state, status) {
     state.ready = status
