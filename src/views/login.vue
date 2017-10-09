@@ -13,17 +13,17 @@
           <Icon type="ios-locked-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
-        <FormItem >
-          <span  style="float: left" >
-            <Switch v-model="rememberMe" size="small"> </Switch> <span @click="rememberMe = !rememberMe"> 记住我</span>
-          </span>
-          <a class="forgot" href="#">忘记密码?</a>
-        </FormItem>
-        <FormItem style="text-align: center">
+
+        <div style="text-align: center">
           <Button type="primary" @click="handleSubmit('formInline')">登录</Button>
           <Button type="ghost" style="margin-left: 8px">取消</Button>
-        </FormItem>
-
+        </div>
+        <div style="padding: 20px">
+          <span  style="float: left" >
+            <Switch v-model="rememberMe" > </Switch> <span @click="rememberMe = !rememberMe"> 记住我</span>
+          </span>
+          <a class="forgot" href="#">忘记密码?</a>
+        </div>
       </Form>
     </Card>
 
@@ -34,7 +34,7 @@
 
 <style rel="stylesheet/less" type="text/css" lang="less">
 
-  @blue :#1fb5bf;
+  @blue :#3399ff;
   .log-form {
     width: 350%;
     min-width: 320px;

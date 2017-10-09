@@ -1,5 +1,8 @@
 <template>
   <Breadcrumb>
+    <BreadcrumbItem href="/">
+      首页
+    </BreadcrumbItem>
     <BreadcrumbItem
       v-for="item in currentPath"
       :href="item.path"

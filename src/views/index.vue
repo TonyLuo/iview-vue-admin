@@ -17,7 +17,7 @@
       <!--&lt;!&ndash;<img style="height: 40px"  src="static/assets/img/logo.png">&ndash;&gt;-->
       <!--</div>-->
     </div>
-    <div class="right col" :style="{left: hideSidebarText?'60px':'200px'}">
+    <div class="right col body" :style="{left: hideSidebarText?'60px':'200px'}">
       <ceiling></ceiling>
       <tabs class="layout-tabs"></tabs>
       <breadcrumb class="layout-breadcrumb"></breadcrumb>
