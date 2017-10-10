@@ -3,7 +3,38 @@
  */
 // import Vue from 'vue'
 import axios from 'axios';
+import store from '../store'
 
+axios.defaults.baseURL = `${process.env.BASE_URL}/api`
+// http request 拦截器
+axios.interceptors.request.use(
+  config => {
+    if (store.getters.token) {
+      config.headers['Authorization'] = `Bearer ${store.getters.token}`;
+      config.headers['Content-Type'] = 'application/json'
+    }
+    return config;
+  },
+  err => {
+    return Promise.reject(err);
+  });
+
+// http response 拦截器
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          // 401 清除token信息
+          store.dispatch('logout');
+
+      }
+    }
+    return Promise.reject(error)
+  });
 const httpUtil =
     {
         fetch: axios,

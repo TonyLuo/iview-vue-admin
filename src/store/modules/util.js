@@ -5,6 +5,8 @@ const state = {
 const actions = {
   changeStorage: function({commit}, rememberMe) {
     localStorage.setItem('rememberMe', rememberMe);
+    // localStorage.removeItem("rememberMe"); //undefined
+
     commit(types.SET_STORAGE, rememberMe);
   }
 };

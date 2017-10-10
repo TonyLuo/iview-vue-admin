@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import App from './App'
@@ -15,6 +16,7 @@ Vue.use(Vuex)
 Vue.use(iView)
 
 Vue.config.productionTip = false
+
 
 function guardRoute (route, redirect, next) {
   if (window.confirm(`Navigate to ${route.path}?`)) {

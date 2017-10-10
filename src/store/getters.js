@@ -1,10 +1,11 @@
-export const cartProducts = state => {
-  return state.cart.added.map(({id, quantity}) => {
-    const product = state.products.all.find(p => p.id === id)
-    return {
-      title: product.title,
-      price: product.price,
-      quantity
+export const token = state => {
+  if(state.user.token && state.user.token.expiresTime){
+    if(state.user.token.expiresTime > new Date().getTime()){
+      return state.user.token.userToken
+    }else{
+      return null
     }
-  })
+  }
 }
+
+

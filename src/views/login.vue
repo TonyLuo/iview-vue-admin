@@ -3,8 +3,8 @@
     <Card :bordered="false">
       <p slot="title" style="text-align: center;">请登录</p>
       <Form ref="loginForm" :model="loginForm" :rules="loginFormRule">
-        <FormItem prop="user">
-          <Input type="text" v-model="loginForm.user" placeholder="用户名">
+        <FormItem prop="username">
+          <Input type="text" v-model="loginForm.username" placeholder="用户名">
           <Icon type="ios-person-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
@@ -66,21 +66,23 @@
 
 </style>
 <script>
+  import user from '../api/user'
+
   export default {
     data () {
       return {
         loginForm: {
-          user: '',
-          password: '',
-          rememberMe: false
+          'password': 'admin',
+          'rememberMe': false,
+          'username': 'admin'
         },
         loginFormRule: {
-          user: [
+          username: [
             {required: true, message: '请填写用户名', trigger: 'blur'}
           ],
           password: [
             {required: true, message: '请填写密码', trigger: 'blur'},
-            {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
+            {type: 'string', min: 3, message: '密码长度不能小于3位', trigger: 'blur'}
           ]
         }
       }
@@ -88,19 +90,54 @@
     mounted () {
       if (localStorage.getItem('rememberMe') === 'true') {
         this.$set(this.loginForm, 'rememberMe', true)
+      }else{
+        this.$set(this.loginForm, 'rememberMe', false)
+
       }
+      this.changeRememberMe() // trigger rememberMe
     },
     methods: {
+
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            this.$Message.success('提交成功')
-          } else {
-//            this.$Message.error('表单验证失败!')
+            user.login(this.loginForm).then(res => {
+              this.handleLoginSuccess(res)
+            }).catch((error) => {
+              this.handleLoginError(error)
+            })
+
           }
         })
       },
-      changeRememberMe (rememberMe) {
+      handleLoginSuccess: function (res) {
+        this.$store.dispatch('initUser', res.data).then(() => {
+          this.$Message.success('登录成功')
+          this.$router.push({
+            name: 'home'
+          })
+        })
+      },
+      handleLoginError: function (error) {
+        if (error && error.response
+          && error.response.status === 401
+          && error.response.data
+          && error.response.data.AuthenticationException) {
+          let authenticationException = error.response.data.AuthenticationException
+          let msg = '用户名/密码错误'
+          if (authenticationException === 'User user was not activated') {
+            msg = '用户未激活'
+          }
+          this.$Message.error(msg)
+
+        } else {
+          if (error.response && error.response.data && error.response.data.message) {
+            this.$Message.error(error.response.data.message)
+
+          }
+        }
+      },
+      changeRememberMe () {
         this.$store.dispatch('changeStorage', this.loginForm.rememberMe)
       }
     }

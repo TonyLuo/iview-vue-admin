@@ -19,6 +19,7 @@ export const SET_OPENED_MENU_LIST = 'SET_OPENED_MENU_LIST'
 //user
 export const SET_USER = 'SET_USER'
 export const CLEAR_USER = 'CLEAR_USER'
+export const SET_USER_TOKEN = 'SET_USER_TOKEN'
 
 
 
