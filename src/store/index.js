@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
 import createLogger from '../plugins/logger'
+
+import util from './modules/util'
 import layout from './modules/layout'
 
 Vue.use(Vuex)
@@ -12,6 +14,7 @@ export default new Vuex.Store({
   actions,
   getters,
   modules: {
+    util,
     layout
   },
   strict: debug,

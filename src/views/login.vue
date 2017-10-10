@@ -2,25 +2,25 @@
   <div class="log-form">
     <Card :bordered="false">
       <p slot="title" style="text-align: center;">请登录</p>
-      <Form ref="formInline" :model="formInline" :rules="ruleInline">
+      <Form ref="loginForm" :model="loginForm" :rules="loginFormRule">
         <FormItem prop="user">
-          <Input type="text" v-model="formInline.user" placeholder="用户名">
+          <Input type="text" v-model="loginForm.user" placeholder="用户名">
           <Icon type="ios-person-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
         <FormItem prop="password">
-          <Input type="password" v-model="formInline.password" placeholder="密码">
+          <Input type="password" v-model="loginForm.password" placeholder="密码">
           <Icon type="ios-locked-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
 
         <div style="text-align: center">
-          <Button type="primary" @click="handleSubmit('formInline')">登录</Button>
+          <Button type="primary" @click="handleSubmit('loginForm')">登录</Button>
           <Button type="ghost" style="margin-left: 8px">取消</Button>
         </div>
         <div style="padding: 20px">
-          <span  style="float: left" >
-            <Switch v-model="rememberMe" > </Switch> <span @click="rememberMe = !rememberMe"> 记住我</span>
+          <span style="float: left">
+            <Switch v-model="loginForm.rememberMe" @on-change="changeRememberMe"> </Switch>  记住我
           </span>
           <a class="forgot" href="#">忘记密码?</a>
         </div>
@@ -51,10 +51,12 @@
 
     box-shadow: 0px 2px 5px rgba(0, 0, 0, .25);
 
-  .forgot,.remember {
+  .forgot, .remember {
     color: lighten(@blue, 10%);
     float: right;
-    &:hover {
+
+  &
+  :hover {
     color: darken(@blue, 5%);
   }
 
@@ -67,12 +69,12 @@
   export default {
     data () {
       return {
-        rememberMe: false,
-        formInline: {
+        loginForm: {
           user: '',
-          password: ''
+          password: '',
+          rememberMe: false
         },
-        ruleInline: {
+        loginFormRule: {
           user: [
             {required: true, message: '请填写用户名', trigger: 'blur'}
           ],
@@ -83,15 +85,23 @@
         }
       }
     },
+    mounted () {
+      if (localStorage.getItem('rememberMe') === 'true') {
+        this.$set(this.loginForm, 'rememberMe', true)
+      }
+    },
     methods: {
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            this.$Message.success('提交成功!')
+            this.$Message.success('提交成功')
           } else {
-            this.$Message.error('表单验证失败!')
+//            this.$Message.error('表单验证失败!')
           }
         })
+      },
+      changeRememberMe (rememberMe) {
+        this.$store.dispatch('changeStorage', this.loginForm.rememberMe)
       }
     }
   }
