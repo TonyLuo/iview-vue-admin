@@ -1,12 +1,12 @@
 <template>
 
-  <Table :data="tableData1" :columns="tableColumns" stripe>
+  <Table :data="tableData1" :loading="loading" :columns="tableColumns" stripe>
     <div slot="footer" style="padding-left:5px">
       <Page :total="total" :current="1"
             size="small"
             placement="top"
-            @on-change="changePage"
-            @on-page-size-change="changePageSize"
+            @on-change="onPageChange"
+            @on-page-size-change="onPageSizeChange"
             show-elevator show-total show-sizer></Page>
     </div>
   </Table>
@@ -17,29 +17,72 @@
 
 </style>
 <script>
+  import expandRow from '../../components/table/expand-row.vue';
+  import operation from '../../components/table/operation.vue';
   import userApi from '../../api/user'
-
   export default {
+    components: { expandRow },
     data () {
       return {
-        page: 1,
-        pageSize: 10,
         total: 0,
+        loading: false,
+        queryOptions: {
+          page: 1,
+          size: 10,
+          sortWay: null,
+          queryMethod: null,
+          queryValue: null
+        },
         tableData1: [],
         tableColumns: [
           {
+            type: 'expand',
+            width: 30,
+            render: (h, params) => {
+              return h(expandRow, {
+                props: {
+                  row: params.row
+                }
+              })
+            }
+          },
+          {
+            title: '操作',
+            key: 'action',
+            width: 100,
+            align: 'center',
+            render: (h, params) => {
+              return h(operation, {
+                props: {
+                  row: params.row,
+                  operation:()=>{
+                    this.show(params.row)
+                  }
+                }
+              })
+            }
+          },
+
+          {
+            width: 150,
+
             title: '帐号',
             key: 'login'
           },
           {
+            width: 150,
+
             title: '姓氏',
             key: 'firstName'
           },
           {
+            width: 150,
             title: '名字',
             key: 'lastName'
           },
           {
+            width: 300,
+
             title: '权限',
             key: 'authorities',
             render: (h, params) => {
@@ -64,6 +107,8 @@
             }
           },
           {
+            width: 150,
+
             title: '创建时间',
             key: 'createdDate',
             render: (h, params) => {
@@ -71,6 +116,8 @@
             }
           },
           {
+            width: 150,
+
             title: '更新时间',
             key: 'lastModifiedDate',
             render: (h, params) => {
@@ -82,8 +129,7 @@
     },
     methods: {
       fetchData () {
-
-        userApi.list().then(res => {
+        userApi.list(this.queryOptions).then(res => {
           this.total = res.data.content.length
           this.tableData1 = res.data.content
         })
@@ -97,15 +143,30 @@
         d = d < 10 ? ('0' + d) : d
         return y + '-' + m + '-' + d
       },
-      changePage (page) {
-        this.page = page
-        // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
-        this.tableData1 = this.mockTableData1()
+      show (row) {
+        this.$Modal.info({
+          title: '用户信息',
+          content: `帐号：${row.login}<br>`
+        })
       },
-      changePageSize (size) {
-        this.pageSize = size
-        this.tableData1 = this.fetchData()
+      remove (index) {
+        this.data6.splice(index, 1);
+      },
+      onPageChange(page) {
+        this.queryOptions.page = page;
+        this.fetchData()
+      },
 
+      onPageSizeChange(size) {
+        this.queryOptions.size = size;
+        this.fetchData()
+      },
+      onSortChange(sortWay) {
+        this.queryOptions.sortWay = {
+          prop: sortWay.prop,
+          order: sortWay.order
+        };
+        this.fetchData()
       }
     },
     mounted () {
