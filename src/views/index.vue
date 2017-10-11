@@ -58,7 +58,7 @@
     },
     methods: {
       init () {
-        this.$store.dispatch('initial', {})
+        this.$store.dispatch('initApp', {})
 
       },
       toggleClick () {

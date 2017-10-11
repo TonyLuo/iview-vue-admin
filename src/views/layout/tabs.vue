@@ -19,6 +19,8 @@
   }
 </style>
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'tabs',
     props: {},
@@ -27,11 +29,10 @@
         currentPageName: ''
       }
     },
-    computed: {
-      itemList () {
-        return this.$store.state.layout.pageOpenedList.slice()
-      }
-    },
+    computed: mapGetters({
+      itemList: 'openedTabList'
+    }),
+
     watch: {
       '$route' (to) {
         this.currentPageName = to.name

@@ -3,24 +3,24 @@
     <!--<Avatar class="align-middle avatar" shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />-->
 
     <Dropdown style="float: right" placement="bottom-end">
-        <!--<Avatar class="avatar"  shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />-->
+      <!--<Avatar class="avatar"  shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />-->
       <Button type="text" style="margin-top: -3px; margin-right:-10px;">
-        <Avatar class="avatar"  shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+        <!--<Avatar class="avatar" shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>-->
+        <Avatar class="avatar" shape="square" :src="user.imageUrl ? user.imageUrl : 'https://i.loli.net/2017/08/21/599a521472424.jpg'"/>
       </Button>
       <DropdownMenu slot="list">
         <DropdownItem>个人设置</DropdownItem>
-        <DropdownItem divided>退出登录</DropdownItem>
+        <DropdownItem @click.native="logout" divided >退出登录</DropdownItem>
       </DropdownMenu>
 
     </Dropdown>
-    <div class="layout-ceiling-main align-middle" >
+    <div class="layout-ceiling-main align-middle">
       <a href="#/login">注册登录</a>
       <a href="#">帮助中心</a>
       <a href="#">安全中心</a>
       <a href="#">服务大厅</a>
 
     </div>
-
 
 
   </div>
@@ -52,16 +52,28 @@
   .layout-ceiling-main a:hover {
     color: #fff;
   }
+
   .layout-ceiling .avatar {
     float: right;
     margin-right: 1em
   }
 </style>
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'ceiling',
     props: {
       itemList: Array
+    },
+    computed: mapGetters({
+      user: 'userDetail'
+    }),
+    methods: {
+      logout () {
+        this.$store.dispatch('logout')
+        this.$router.push({path: '/login'})
+      }
     }
   }
 </script>

@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
-import util from '../../libs/util'
+import { checkPermission } from '../../libs/util'
 import * as types from '../mutation-types'
 import { appRouter } from '../../router'
-import user from './user'
 
 // initial state
 
@@ -22,27 +21,31 @@ const state = {
 // getters
 const getters = {
   // TODO filter menuList according to the user role
-  sidebarMenuList: state => {
+  sidebarMenuList: (state, getters) => {
     let menuList = state.menuList.filter(menu => {
-      return util.checkPermission(menu)
+      return checkPermission(menu)
     })
     let temMenuList = []
     menuList.forEach(item => {
       let menu = Object.assign({}, item)
       if (item && item.children) {
         menu.children = item.children.filter(child => {
-          return util.checkPermission(child)
+          return checkPermission(child)
         })
       }
       temMenuList.push(menu)
     })
     return temMenuList
+  },
+  openedTabList : (state, getters) =>{
+    return state.pageOpenedList
   }
+
 }
 
 // actions
 const actions = {
-  initial ({dispatch, commit, state}, data) {
+  initApp ({dispatch, commit, state}, data) {
     dispatch('initLayout').then(() => {
       dispatch('setMenuList').then(() => {
         dispatch('setTabList').then(() => {

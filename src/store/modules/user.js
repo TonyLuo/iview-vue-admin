@@ -49,16 +49,22 @@ const mutations = {
   }
 }
 const actions = {
+  initApp({dispatch, commit}, data){
+    dispatch('initUser')
+
+  },
   initUser ({dispatch, commit}, data) {
     dispatch('initUserToken', data).then(() => {
       dispatch('setUser')
     })
   },
-  setUser ({dispatch, commit}) {
-    user.getUserInfo().then(res => {
-      commit(types.SET_USER, res.data)
+  setUser ({dispatch, commit,state}) {
+    if(state.token.userToken){
+      user.getUserInfo().then(res => {
+        commit(types.SET_USER, res.data)
 
-    })
+      })
+    }
 
   },
   initUserToken ({dispatch, commit}, token) {
@@ -77,13 +83,16 @@ const actions = {
     // get token from localStorage/sessionStorage
     else {
       let strToken = storage.state.storage.getItem('userToken')
-      let localToken = JSON.parse(strToken)
-      if (localToken.expiresTime > new Date().getTime()) {
-        commit(types.SET_USER_TOKEN, localToken)
+      if(strToken){
+        let localToken = JSON.parse(strToken)
+        if (localToken.expiresTime > new Date().getTime()) {
+          commit(types.SET_USER_TOKEN, localToken)
 
-      } else {
-        commit(types.CLEAR_USER)
+        } else {
+          commit(types.CLEAR_USER)
+        }
       }
+
     }
   },
 
