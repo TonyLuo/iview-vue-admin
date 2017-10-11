@@ -2,6 +2,7 @@ import Main from '../views/index.vue'
 import Abstract from '../views/layout/abstract.vue'
 import Home from '../views/home/home.vue'
 import Login from '../views/login.vue'
+import Profile from '../views/profile/profile.vue'
 import Table from '../views/table/table.vue'
 
 export const loginRouter = {
@@ -13,6 +14,17 @@ export const loginRouter = {
   component: Login
 }
 
+export const profileRouter = {
+  title: '个人设置',
+  path: '/profile',
+  name: 'profile',
+  meta: {
+    hidden: true,
+    auth: ['ROLE_USER']
+  },
+  component: Profile
+}
+
 export const appRouter = [
   {
     title: '首页',
@@ -22,13 +34,23 @@ export const appRouter = [
     component: Home
   },
   {
+    title: '个人设置',
+    path: '/profile',
+    name: 'profile',
+    meta: {
+      hidden: true, // set it invisible on sidebar
+      auth: ['ROLE_USER']
+    },
+    component: Profile
+  },
+  {
     title: '内容管理',
     path: '/content',
     name: 'content',
     icon: 'ios-paper',
     component: Abstract,
     meta: {
-      auth : ['ROLE_ADMIN']
+      auth: ['ROLE_ADMIN']
     },
     children: [
       {
@@ -69,7 +91,7 @@ export const appRouter = [
         icon: 'ios-paper',
         component: Login,
         meta: {
-          auth : ['ROLE_USER']
+          auth: ['ROLE_USER']
         }
       },
       {

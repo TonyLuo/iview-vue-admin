@@ -2,11 +2,12 @@
   <div class="layout-ceiling">
     <Dropdown style="float: right" placement="bottom-end">
       <Button type="text" style="margin-top: -3px; margin-right:-10px;">
-        <Avatar class="avatar" shape="square" :src="user.imageUrl ? user.imageUrl : 'https://i.loli.net/2017/08/21/599a521472424.jpg'"/>
+        <Avatar class="avatar" shape="square"
+                :src="user.imageUrl ? user.imageUrl : 'https://i.loli.net/2017/08/21/599a521472424.jpg'"/>
       </Button>
       <DropdownMenu slot="list">
-        <DropdownItem>个人设置</DropdownItem>
-        <DropdownItem @click.native="logout" divided >退出登录</DropdownItem>
+        <DropdownItem @click.native="setProfile">个人设置</DropdownItem>
+        <DropdownItem @click.native="logout" divided>退出登录</DropdownItem>
       </DropdownMenu>
 
     </Dropdown>
@@ -66,6 +67,9 @@
       user: 'userDetail'
     }),
     methods: {
+      setProfile () {
+        this.$router.push({path: '/profile'})
+      },
       logout () {
         this.$store.dispatch('logout')
         this.$router.push({path: '/login'})

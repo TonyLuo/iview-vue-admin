@@ -22,7 +22,8 @@ const getters = {
   // TODO filter menuList according to the user role
   sidebarMenuList: (state, getters) => {
     let menuList = state.menuList.filter(menu => {
-      return checkPermission(menu)
+
+      return !(menu.meta && menu.meta.hidden) && checkPermission(menu)
     })
     let temMenuList = []
     menuList.forEach(item => {
