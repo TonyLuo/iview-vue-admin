@@ -8,7 +8,6 @@ import { appRouter } from '../../router'
 const state = {
   ready: false,
   routers: [],
-  appRouter: [],
   openedMenuNameList: [],
   menuList: [],
   tabList: [],
@@ -158,7 +157,6 @@ const mutations = {
 
   },
   [types.INIT_LAYOUT] (state, name) {
-    state.appRouter = appRouter.slice()
     state.pageOpenedList = [appRouter[0]]
     state.currentPath = [
       {

@@ -10,6 +10,7 @@ const state = {
 // getters
 const getters = {
   token: state => {
+    // check whether the token still valid
     if (state.token && state.token.expiresTime) {
       if (state.token.expiresTime > new Date().getTime()) {
         return state.token.userToken
