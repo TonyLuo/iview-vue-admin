@@ -1,27 +1,45 @@
 <template>
 
-  <Table :data="tableData1" :loading="loading" :columns="tableColumns" stripe>
-    <div slot="footer" style="padding-left:5px">
-      <Page :total="total" :current="1"
-            size="small"
-            placement="top"
-            @on-change="onPageChange"
-            @on-page-size-change="onPageSizeChange"
-            show-elevator show-total show-sizer></Page>
-    </div>
-  </Table>
+  <span>
 
+    <Table :data="tableData1" :loading="loading" :columns="tableColumns" stripe>
+      <div slot="header" style="padding:5px">
+        <Select style="width: 80px;float: left">
+          <Option value="day">日活</Option>
+          <Option value="month">月活</Option>
+        </Select>
+        <Select style="width: 180px;float: left">
+          <Option value="day">日活</Option>
+          <Option value="month">月活xxxxxxx</Option>
+        </Select>
+        <div><Input style="width: 180px;height:10px;top: -8px;float: left"></Input></div>
+        <DatePicker :value="value2" format="yyyy/MM/dd" type="daterange" placement="bottom-end"
+                    placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
+        <Button icon="ios-search" style="float: left"></Button>
+      </div>
+      <div slot="footer" style="padding-left:5px">
+        <Page :total="total" :current="1"
+              size="small"
+              placement="top"
+              @on-change="onPageChange"
+              @on-page-size-change="onPageSizeChange"
+              show-elevator show-total show-sizer></Page>
+      </div>
+    </Table>
+
+  </span>
 
 </template>
 <style>
 
 </style>
 <script>
-  import expandRow from '../../components/table/expand-row.vue';
-  import operation from '../../components/table/operation.vue';
+  import expandRow from '../../components/table/expand-row.vue'
+  import operation from '../../components/table/operation.vue'
   import userApi from '../../api/user'
+
   export default {
-    components: { expandRow },
+    components: {expandRow},
     data () {
       return {
         total: 0,
@@ -55,7 +73,7 @@
               return h(operation, {
                 props: {
                   row: params.row,
-                  operation:()=>{
+                  operation: () => {
                     this.show(params.row)
                   }
                 }
@@ -150,22 +168,22 @@
         })
       },
       remove (index) {
-        this.data6.splice(index, 1);
+        this.data6.splice(index, 1)
       },
-      onPageChange(page) {
-        this.queryOptions.page = page;
+      onPageChange (page) {
+        this.queryOptions.page = page
         this.fetchData()
       },
 
-      onPageSizeChange(size) {
-        this.queryOptions.size = size;
+      onPageSizeChange (size) {
+        this.queryOptions.size = size
         this.fetchData()
       },
-      onSortChange(sortWay) {
+      onSortChange (sortWay) {
         this.queryOptions.sortWay = {
           prop: sortWay.prop,
           order: sortWay.order
-        };
+        }
         this.fetchData()
       }
     },
