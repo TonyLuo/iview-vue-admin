@@ -3,6 +3,7 @@ import Abstract from '../views/layout/abstract.vue'
 import Home from '../views/home/home.vue'
 import Login from '../views/login.vue'
 import Profile from '../views/profile/profile.vue'
+import UserList from '../views/user/user-list.vue'
 import Table from '../views/table/table.vue'
 
 export const loginRouter = {
@@ -44,6 +45,42 @@ export const appRouter = [
     component: Profile
   },
   {
+    title: '用户管理',
+    path: '/user',
+    name: 'user',
+    icon: 'person',
+    component: Abstract,
+    children: [
+      {
+        title: '用户列表',
+        name: 'usr_list',
+        path: 'list',
+        icon: 'ios-people',
+        component: UserList,
+        meta: {
+          auth: ['ROLE_USER']
+        }
+      },
+      {
+        title: '新增用户',
+        name: 'usr_new',
+        path: 'new',
+        icon: 'person-add',
+        component: Login,
+        meta: {
+          auth: ['ROLE_USER']
+        }
+      },
+      {
+        title: '活跃用户',
+        name: 'usr_activated',
+        path: 'activated',
+        icon: 'ios-body',
+        component: Table
+      }
+    ]
+  },
+  {
     title: '内容管理',
     path: '/content',
     name: 'content',
@@ -77,32 +114,7 @@ export const appRouter = [
     ]
 
   },
-  {
-    title: '用户管理',
-    path: '/user',
-    name: 'user',
-    icon: 'ios-people',
-    component: Abstract,
-    children: [
-      {
-        title: '新增用户',
-        name: 'usr_new',
-        path: 'new',
-        icon: 'ios-paper',
-        component: Login,
-        meta: {
-          auth: ['ROLE_USER']
-        }
-      },
-      {
-        title: '活跃用户',
-        name: 'usr_activated',
-        path: 'activated',
-        icon: 'images',
-        component: Table
-      }
-    ]
-  },
+
   {
     title: '统计分析',
     path: '/statistics',
