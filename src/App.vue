@@ -10,8 +10,8 @@ export default {
 }
 </script>
 
-<style>
-  @import "./styles/common.css";
+<style rel="stylesheet/less" type="text/css" lang="less">
+  @import "./styles/common.less";
   html body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

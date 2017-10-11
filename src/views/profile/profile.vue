@@ -1,30 +1,27 @@
 <template>
-  <div class="content has-text-centered">
 
-    <Form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="ruleForm">
-      <!--<FormItem label="年龄" prop="age">-->
-      <!--<el-input v-model.number="ruleForm2.age"></el-input>-->
-      <!--</FormItem>-->
-      <FormItem label="姓氏" prop="firstName">
-        <el-input v-model="ruleForm2.firstName"></el-input>
-      </FormItem>
-      <FormItem label="名字" prop="lastName">
-        <el-input v-model="ruleForm2.lastName"></el-input>
-      </FormItem>
-      <FormItem label="密码" prop="password">
-        <el-input type="password" v-model="ruleForm2.password" auto-complete="off" ></el-input>
-      </FormItem>
-      <FormItem label="确认密码" prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" ></el-input>
-      </FormItem>
+  <Form :model="profileForm" :rules="profileRules" ref="profileForm" class="ruleForm" :label-width="80">
+    <FormItem label="姓氏" prop="firstName">
+      <Input v-model="profileForm.firstName"></Input>
+    </FormItem>
+    <FormItem label="名字" prop="lastName">
+      <Input v-model="profileForm.lastName"></Input>
+    </FormItem>
+    <FormItem label="密码" prop="password">
+      <Input type="password" v-model="profileForm.password"></Input>
+    </FormItem>
+    <FormItem label="确认密码" prop="checkPass">
+      <Input type="password" v-model="profileForm.checkPass"></Input>
+    </FormItem>
 
-      <FormItem>
-        <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-      </FormItem>
-    </Form>
+    <FormItem>
+      <Button type="primary" @click="submitForm('profileForm')">提交</Button>
+      <Button type="ghost" @click="handleReset('profileForm')" style="margin-left: 8px">重置</Button>
+    </FormItem>
+
+  </Form>
 
 
-  </div>
 </template>
 
 <script>
@@ -33,44 +30,20 @@
 
   export default {
     data () {
-      var checkAge = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('年龄不能为空'))
-        }
-        setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'))
-          } else {
-            if (value < 18) {
-              callback(new Error('必须年满18岁'))
-            } else {
-              callback()
-            }
-          }
-        }, 1000)
-      };
-      var validatePass = (rule, value, callback) => {
-//        if (value === '') {
-//          callback(new Error('请输入密码'));
-//        } else {
-//          if (this.ruleForm2.checkPass !== '') {
-//            this.$refs.ruleForm2.validateField('checkPass');
-//          }
-//          callback();
-//        }
+      let validatePass = (rule, value, callback) => {
 
-        this.$refs.ruleForm2.validateField('checkPass');
+        this.$refs.profileForm.validateField('checkPass')
 
         callback()
-      };
-      var validatePass2 = (rule, value, callback) => {
+      }
+      let validatePass2 = (rule, value, callback) => {
         if (!value || value === '') {
-          if (!this.ruleForm2.password || this.ruleForm2.password === '') {
+          if (!this.profileForm.password || this.profileForm.password === '') {
             callback()
           } else {
             callback(new Error('两次输入密码不一致!'))
           }
-        } else if (value !== this.ruleForm2.password) {
+        } else if (value !== this.profileForm.password) {
           callback(new Error('两次输入密码不一致!'))
         } else if (value.length < 4) {
           callback(new Error('密码长度至少4位'))
@@ -78,69 +51,66 @@
           callback()
         }
 
-      };
+      }
       return {
-        ruleForm2:
+        profileForm:
           {
             firstName: '',
             lastName: '',
             password: null,
-            checkPass: null,
-            age: ''
+            checkPass: null
           },
-        rules2: {
+        profileRules: {
           password: [
             {validator: validatePass, trigger: 'blur'}
           ],
           checkPass: [
             {validator: validatePass2, trigger: 'blur'}
-          ],
-          age: [
-            {validator: checkAge, trigger: 'blur'}
           ]
         }
       }
     },
-
+    watch: {
+      userInfo () {
+        this.profileForm = Object.assign({}, this.userInfo)
+      }
+    },
     mounted () {
-//      console.log(this.userInfo)
-      this.ruleForm2.id = this.userInfo.id;
-      this.ruleForm2.login = this.userInfo.login;
-      this.ruleForm2.authorities = this.userInfo.authorities;
-      this.ruleForm2.firstName = this.userInfo.firstName;
-      this.ruleForm2.lastName = this.userInfo.lastName;
-      this.ruleForm2.activted = this.userInfo.activated
-//      this.ruleForm2 = Object.assign({}, this.userInfo)
-//      this.ruleForm2 = Object.assign({}, this.userInfo)
-
+      this.init()
     },
-    computed: {
-      ...mapGetters([
-        'userInfo'
-      ])
-    },
+    computed: mapGetters({
+      userInfo: 'userDetail'
+    }),
     methods: {
+      init () {
+        this.profileForm = Object.assign({}, this.userInfo)
+//        this.$set(this.profileForm, 'id', this.userInfo.id)
+//        this.$set(this.profileForm, 'login', this.userInfo.login)
+//        this.$set(this.profileForm, 'authorities', this.userInfo.authorities)
+//        this.$set(this.profileForm, 'firstName', this.userInfo.firstName)
+//        this.$set(this.profileForm, 'lastName', this.userInfo.lastName)
+//        this.$set(this.profileForm, 'activated', this.userInfo.activated)
+      },
       update (data) {
         userApi.update(data).then((res) => {
-          this.$notify({
-            message: '编辑成功',
-            type: 'success'
-          })
+          this.$store.commit('SET_USER', res.data)
+          this.$Message.success('更新成功!')
         })
       },
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.update(this.ruleForm2)
+            this.update(this.profileForm)
+
           } else {
-            console.log('error submit!!');
+            console.log('error submit!!')
             return false
           }
         })
+      },
+      handleReset (name) {
+        this.$refs[name].resetFields()
       }
-//      resetForm(formName) {
-//        this.$refs[formName].resetFields();
-//      }
     }
   }
 
