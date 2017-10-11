@@ -4,7 +4,7 @@ import * as actions from './actions'
 import * as getters from './getters'
 import createLogger from '../plugins/logger'
 
-import util from './modules/util'
+import storage from './modules/storage'
 import layout from './modules/layout'
 import user from './modules/user'
 
@@ -15,7 +15,7 @@ export default new Vuex.Store({
   actions,
   getters,
   modules: {
-    util,
+    storage,
     layout,
     user
   },

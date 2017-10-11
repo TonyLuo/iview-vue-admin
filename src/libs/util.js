@@ -1,3 +1,5 @@
+import store from '../store'
+
 /**
  * Get the first item that pass the test
  * by second argument function
@@ -70,5 +72,24 @@ let util = {}
 util.title = function (title) {
   title = title ? title + ' - Home' : 'iView Admin'
   window.document.title = title
+}
+util.checkPermission = ( item) => {
+
+  if(!item.meta || !item.meta.auth) return true;
+
+  let userRoles = store.getters.roles
+  console.log(userRoles)
+  if(!(userRoles instanceof Array)  || userRoles.length === 0) return false;
+
+  if (userRoles && userRoles.indexOf('ROLE_ADMIN') >= 0) return true // 管理员拥有所有权限
+  if (item.meta && item.meta.auth) {
+    if (item.meta.auth instanceof Array) {
+      return userRoles && userRoles.some(role => item.meta.auth.indexOf(role) >= 0)
+    } else {
+      return userRoles && userRoles.indexOf(item.meta.auth) >= 0
+    }
+  } else {
+    return true
+  }
 }
 export default util

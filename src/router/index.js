@@ -27,6 +27,9 @@ export const appRouter = [
     name: 'content',
     icon: 'ios-paper',
     component: Abstract,
+    meta: {
+      auth : ['ROLE_ADMIN']
+    },
     children: [
       {
         title: '文章管理',
@@ -64,7 +67,10 @@ export const appRouter = [
         name: 'usr_new',
         path: 'new',
         icon: 'ios-paper',
-        component: Login
+        component: Login,
+        meta: {
+          auth : ['ROLE_USER']
+        }
       },
       {
         title: '活跃用户',

@@ -1,11 +1,29 @@
 import * as types from '../mutation-types'
-import util from './util'
+import storage from './storage'
 import user from '../../api/user'
 
 const state = {
   userDetail: {},
   token: {},
   userId: null
+}
+// getters
+const getters = {
+  token: state => {
+    if (state.token && state.token.expiresTime) {
+      if (state.token.expiresTime > new Date().getTime()) {
+        return state.token.userToken
+      } else {
+        return null
+      }
+    }
+  },
+  userDetail: state => {
+    return state.userDetail
+  },
+  roles: state => {
+    return state.userDetail.authorities
+  }
 }
 
 const mutations = {
@@ -14,7 +32,7 @@ const mutations = {
     if (user) {
       state.userDetail = user
       state.userId = user.id
-      util.state.storage.setItem('userId', user.id)
+      storage.state.storage.setItem('userId', user.id)
     }
   },
   [types.SET_USER_TOKEN]: (state, token) => {
@@ -49,21 +67,21 @@ const actions = {
 
       let now = new Date()
       var nowTime = now.getTime()//转化为时间戳毫秒数
-      let expiresTime = now.setTime(nowTime + 1000 * token.expires_in - 1000 * 60 * 10 )//设置比真实失效时间提前十分钟
+      let expiresTime = now.setTime(nowTime + 1000 * token.expires_in - 1000 * 60 * 10)//设置比真实失效时间提前十分钟
       let userToken = {userToken: token.id_token, expiresTime: expiresTime} //转成失效时间
       let strToken = JSON.stringify(userToken) //转化为JSON字符串
-      util.state.storage.setItem('userToken', strToken)
+      storage.state.storage.setItem('userToken', strToken)
 
       commit(types.SET_USER_TOKEN, userToken)
     }
     // get token from localStorage/sessionStorage
     else {
-      let strToken = util.state.storage.getItem('userToken')
+      let strToken = storage.state.storage.getItem('userToken')
       let localToken = JSON.parse(strToken)
-      if(localToken.expiresTime > new Date().getTime()){
+      if (localToken.expiresTime > new Date().getTime()) {
         commit(types.SET_USER_TOKEN, localToken)
 
-      }else{
+      } else {
         commit(types.CLEAR_USER)
       }
     }
@@ -78,6 +96,7 @@ const actions = {
 
 export default {
   state,
+  getters,
   mutations,
   actions
 }

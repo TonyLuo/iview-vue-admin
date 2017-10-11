@@ -2,6 +2,12 @@ import * as types from '../mutation-types';
 const state = {
   storage: sessionStorage
 };
+// getters
+const getters = {
+  storage : state => {
+    return state.storage
+  }
+}
 const actions = {
   changeStorage: function({commit}, rememberMe) {
     localStorage.setItem('rememberMe', rememberMe);
@@ -22,6 +28,7 @@ const mutations = {
 };
 export default {
   state,
+  getters,
   mutations,
   actions
 };

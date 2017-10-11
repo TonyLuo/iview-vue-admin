@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
+import util from '../../libs/util'
 import * as types from '../mutation-types'
 import { appRouter } from '../../router'
+import user from './user'
 
 // initial state
 
@@ -18,7 +20,25 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  // TODO filter menuList according to the user role
+  sidebarMenuList: state => {
+    let menuList = state.menuList.filter(menu => {
+      return util.checkPermission(menu)
+    })
+    let temMenuList = []
+    menuList.forEach(item => {
+      let menu = Object.assign({}, item)
+      if (item && item.children) {
+        menu.children = item.children.filter(child => {
+          return util.checkPermission(child)
+        })
+      }
+      temMenuList.push(menu)
+    })
+    return temMenuList
+  }
+}
 
 // actions
 const actions = {
@@ -36,7 +56,7 @@ const actions = {
     commit(types.INIT_LAYOUT)
   },
   setMenuList ({dispatch, commit, state}, data) {
-    // TODO filter menuList according to the user role
+
     commit(types.SET_MENU_LIST, appRouter.slice())
   },
   setTabList ({dispatch, commit, state}, data) {

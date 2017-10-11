@@ -9,6 +9,8 @@ axios.defaults.baseURL = `${process.env.BASE_URL}/api`
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
+    console.log(store.getters)
+
     if (store.getters.token) {
       config.headers['Authorization'] = `Bearer ${store.getters.token}`;
       config.headers['Content-Type'] = 'application/json'

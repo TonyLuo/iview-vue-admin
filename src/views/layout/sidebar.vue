@@ -8,7 +8,7 @@
         :theme="theme"
         :class="{'hide-sidebard-text': hideSidebarText}">
     <slot name="top" :class="slotTopClass"></slot>
-    <template v-for="item in menuList">
+    <template v-for="item in sidebarMenuList">
       <MenuItem v-if="!item.children" :name="item.name" :key="item.name">
         <Icon :type="item.icon" :size="iconSize" :key="item.path"></Icon>
         <span class="sidebar-menu-text" :key="item.name">{{ item.title }}</span>
@@ -39,6 +39,7 @@
   }
 </style>
 <script>
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'sidebar',
@@ -56,9 +57,9 @@
       iconSize () {
         return 14
       },
-      menuList(){
-        return this.$store.state.layout.menuList.slice()
-      }
+      ...mapGetters([
+        'sidebarMenuList'
+      ])
     },
     watch: {
       '$route' (to) {
