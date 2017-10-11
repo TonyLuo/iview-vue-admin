@@ -1,11 +1,7 @@
 <template>
   <div class="layout-ceiling">
-    <!--<Avatar class="align-middle avatar" shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />-->
-
     <Dropdown style="float: right" placement="bottom-end">
-      <!--<Avatar class="avatar"  shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />-->
       <Button type="text" style="margin-top: -3px; margin-right:-10px;">
-        <!--<Avatar class="avatar" shape="square" src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>-->
         <Avatar class="avatar" shape="square" :src="user.imageUrl ? user.imageUrl : 'https://i.loli.net/2017/08/21/599a521472424.jpg'"/>
       </Button>
       <DropdownMenu slot="list">

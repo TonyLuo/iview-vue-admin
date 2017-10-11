@@ -49,7 +49,7 @@ const mutations = {
   }
 }
 const actions = {
-  initApp({dispatch, commit}, data){
+  initApp ({dispatch, commit}, data) {
     dispatch('initUser')
 
   },
@@ -58,8 +58,8 @@ const actions = {
       dispatch('setUser')
     })
   },
-  setUser ({dispatch, commit,state}) {
-    if(state.token.userToken){
+  setUser ({dispatch, commit, state}) {
+    if (state.token.userToken) {
       user.getUserInfo().then(res => {
         commit(types.SET_USER, res.data)
 
@@ -73,17 +73,17 @@ const actions = {
 
       let now = new Date()
       var nowTime = now.getTime()//转化为时间戳毫秒数
-      let expiresTime = now.setTime(nowTime + 1000 * token.expires_in - 1000 * 60 * 10)//设置比真实失效时间提前十分钟
+      let expiresTime = now.setTime(nowTime + 1000 * token.expires_in - 1000 * 60 * 10)//set expires time 10 minutes advanced 设置比真实失效时间提前十分钟
       let userToken = {userToken: token.id_token, expiresTime: expiresTime} //转成失效时间
       let strToken = JSON.stringify(userToken) //转化为JSON字符串
       storage.state.storage.setItem('userToken', strToken)
 
       commit(types.SET_USER_TOKEN, userToken)
     }
-    // get token from localStorage/sessionStorage
     else {
+      // get token from localStorage/sessionStorage
       let strToken = storage.state.storage.getItem('userToken')
-      if(strToken){
+      if (strToken) {
         let localToken = JSON.parse(strToken)
         if (localToken.expiresTime > new Date().getTime()) {
           commit(types.SET_USER_TOKEN, localToken)
