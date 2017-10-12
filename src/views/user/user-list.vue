@@ -1,7 +1,12 @@
 <template>
 
   <div>
-    <search-criteria></search-criteria>
+
+    <search-criteria :search-options="searchOptions">
+      <div slot="simple-search-btn-append">
+        <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
+      </div>
+    </search-criteria>
     <div>
       <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
 
@@ -15,8 +20,15 @@
         </div>
       </Table>
     </div>
-
-
+    <Modal
+      v-model="showEditModal"
+      title="普通的Modal对话框标题"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+    </Modal>
   </div>
 
 </template>
@@ -36,6 +48,7 @@
     components: {expandRow, operation, editModal, searchCriteria},
     data () {
       return {
+        showEditModal: false,
         total: 0,
         loading: false,
         queryOptions: {
@@ -46,53 +59,7 @@
           queryValue: null
         },
         tableData: [],
-        statusList: [{value: true, label: '有效'}, {value: false, label: '失效'}],
-        searchOptions: {
-          simpleSearchOptions: [{
-            name: '状态',
-            templateOptions: {
-              value: '',
-              type: 'select',
-              selectOptions: this.statusList,
-              operation: this.searchByStatus,
-              width: 100
-            }
-          },
-            {
-              name: '帐号',
-              templateOptions: {
-                value: '',
-                type: 'input',
-                size: 'small',
-                operation: this.searchByLogin
-              }
-            }
-          ]
-          // ,
-          // advancedSearchOptions: {
-          //     operation: this.advancedSearch,
-          //     onCancel: this.onRefresh,
-          //     list: [{
-          //         name: '单位类型',
-          //         field: 'type',
-          //         templateOptions: {
-          //             type: 'select',
-          //             selectOptions: this.organizationTypeList
-          //         }
-          //     },
-          //         {
-          //             name: '单位名称',
-          //             field: 'name',
-          //             templateOptions: {
-          //                 value: '',
-          //                 type: 'input',
-          //                 size: 'small'
-          //             }
-          //         }
-          //     ]
-          // }
-
-        },
+        statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
 
         operations: {
           width: 80,
@@ -217,6 +184,76 @@
           })
         ]
         return columns
+      },
+      searchOptions: function () {
+        return {
+          simpleSearchOptions: [{
+            name: '状态',
+            meta: {
+              value: '',
+              type: 'select',
+              selectOptions: this.statusList,
+              operation: this.searchByStatus,
+              width: 100
+            }
+          },
+            {
+              name: '帐号',
+              meta: {
+                value: '',
+                type: 'input',
+                size: 'small',
+                operation: this.searchByLogin
+              }
+            },
+            {
+              name: '更新时间',
+              meta: {
+                value: '',
+                type: 'dateRange',
+                size: 'small',
+                operation: this.searchByLogin
+              }
+            }
+          ],
+           advancedSearchOptions: {
+               operation: this.advancedSearch,
+               onCancel: this.onRefresh,
+               list: [{
+                 name: '状态',
+                 field: 'activated',
+                 meta: {
+                   value: '',
+                   type: 'select',
+                   selectOptions: this.statusList,
+                   operation: this.searchByStatus,
+                   width: 100
+                 }
+               },
+                 {
+                   name: '帐号',
+                   field: 'login',
+                   meta: {
+                     value: '',
+                     type: 'input',
+                     size: 'small',
+                     operation: this.searchByLogin
+                   }
+                 },
+                 {
+                   name: '更新时间',
+                   field: 'lastModifiedDate',
+                   meta: {
+                     value: '',
+                     type: 'dateRange',
+                     size: 'small',
+                     operation: this.searchByLogin
+                   }
+                 }
+               ]
+           }
+
+        }
       }
     },
     methods: {
@@ -235,29 +272,42 @@
         d = d < 10 ? ('0' + d) : d
         return y + '-' + m + '-' + d
       },
+      ok () {
+        this.$Message.info('点击了确定')
+      },
+      cancel () {
+        this.$Message.info('点击了取消')
+      },
+      create (row) {
+        console.log('create', row)
+      },
       update (row) {
         console.log('update', row)
       },
       delete (row) {
         console.log('delete', row)
       },
+      onCreate () {
+        console.log('oncreate')
+        this.showEditModal = true
+      },
       onUpdate (row) {
-
-        this.$Modal.confirm({
-          title: '用户信息',
-          closable: true,
-          scrollable: true,
-          onOk: () => {
-            this.update(row)
-          },
-          render: (h) => {
-            return h(editModal, {
-              props: {
-                row: row
-              }
-            })
-          }
-        })
+        this.showEditModal = true
+//        this.$Modal.confirm({
+//          title: '用户信息',
+//          closable: true,
+//          scrollable: true,
+//          onOk: () => {
+//            this.update(row)
+//          },
+//          render: (h) => {
+//            return h(editModal, {
+//              props: {
+//                row: row
+//              }
+//            })
+//          }
+//        })
       },
       onDelete (row) {
         this.$Modal.confirm({
@@ -279,6 +329,12 @@
       },
       searchByLogin (value) {
         console.log(`searchByLogin ${value}`)
+
+      },
+      advancedSearch(searchStr) {
+        console.log('advancedSearch',searchStr)
+      },
+      onRefresh(){
 
       },
       onPageChange (page) {

@@ -1,82 +1,72 @@
-
 <template>
-  <div style="padding:5px;background-color: #f9fafc">
+  <div style="padding:10px;background-color: #f9fafc">
 
     <span v-if="!showAdvancedSearch">
-      <Select style="width: 80px;float: left">
-        <Option value="day">日活</Option>
-        <Option value="month">月活</Option>
+
+      <Select v-model="searchOption" @on-change="onChangeSearchCriteria" style="width: 150px;float: left"
+              placeholder="请选择搜索条件">
+        <Option
+          v-for="item in searchOptions.simpleSearchOptions"
+          :label="item.name"
+          :key="item.name"
+          :value="item.name">
+        </Option>
+
       </Select>
-      <Select style="width: 180px;float: left">
-        <Option value="day">日活</Option>
-        <Option value="month">月活xxxxxxx</Option>
-      </Select>
-      <div><Input style="width: 180px;height:10px;float: left"></Input></div>
-      <DatePicker format="yyyy/MM/dd" type="daterange" placement="bottom-end"
-                  placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
-      <Button icon="ios-search" style="float: left"></Button>
-      <Button type="ghost" icon="plus" style="float: left"></Button>
+      <span v-for="(option, index) in searchOptions.simpleSearchOptions" v-if="option.name === searchOption"
+            :key="index"
+            style="float: left">
+        <Select style="width: 180px;float: left" v-model="searchValue" v-if="option.meta.type === 'select'">
+          <Option v-for="(item, index) in option.meta.selectOptions"
+                  :value="item.value"
+                  :key="item.value">
+            {{item.label}}
+          </Option>
+        </Select>
+        <Input style="width: 180px;height:10px;float: left" v-model="searchValue"
+               v-if="option.meta.type === 'input'"></Input>
+        <DatePicker v-model="searchValue" format="yyyy/MM/dd" type="daterange" placement="right-start" v-if="option.meta.type === 'dateRange'"
+                    placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
+       <Button icon="ios-search" style="float: left" @click="option.meta.operation(searchValue)"></Button>
+
+      </span>
+
+      <slot name="simple-search-btn-append" style="float: left">
+      </slot>
     </span>
-    <span style="float:right;padding: 6px" class="advanced-search-control"
+    <slot name="advanced-search-btn-append" style="float: left">
+    </slot>
+    <span style="float:right;padding: 6px"
+          class="advanced-search-control"
           @click="showAdvancedSearch = !showAdvancedSearch">
       高级搜索
       <Icon type="chevron-right" :class="{ active: showAdvancedSearch}"></Icon>
     </span>
     <br/>
     <br/>
-    <Form :model="formItem" :label-width="80" style="width: 380px;" v-if="showAdvancedSearch">
-      <FormItem label="输入框">
-        <Input v-model="formItem.input" placeholder="请输入"></Input>
-      </FormItem>
-      <FormItem label="选择器">
-        <Select v-model="formItem.select" placeholder="请选择">
-          <Option value="beijing">北京市</Option>
-          <Option value="shanghai">上海市</Option>
-          <Option value="shenzhen">深圳市</Option>
+    <Form :model="form" :label-width="80" style="width: 380px;" v-if="showAdvancedSearch">
+      <FormItem :label="option.name" v-for="option in searchOptions.advancedSearchOptions.list" :key="option.name">
+        <Input v-if="option.meta.type ==='input'"
+                  :placeholder="`请输入${option.name}`"
+                  v-model="form[option.field]">
+        </Input>
+        <Select style="width: 180px;float: left" v-model="form[option.field]" v-if="option.meta.type === 'select'">
+          <Option v-for="(item, index) in option.meta.selectOptions"
+                  :value="item.value"
+                  :key="item.value">
+            {{item.label}}
+          </Option>
         </Select>
+        <DatePicker v-model="form[option.field]"
+                    format="yyyy/MM/dd" type="daterange" placement="right-start" v-if="option.meta.type === 'dateRange'"
+                    placeholder="选择日期" style="width: 200px;float: left">
+
+        </DatePicker>
       </FormItem>
-      <FormItem label="日期控件">
-        <Row>
-          <Col span="11">
-          <DatePicker type="date" placeholder="选择日期" v-model="formItem.date"></DatePicker>
-          </Col>
-          <Col span="2" style="text-align: center">
-          -</Col>
-          <Col span="11">
-          <TimePicker type="time" placeholder="选择时间" v-model="formItem.time"></TimePicker>
-          </Col>
-        </Row>
-      </FormItem>
-      <FormItem label="单选框">
-        <RadioGroup v-model="formItem.radio">
-          <Radio label="male">男</Radio>
-          <Radio label="female">女</Radio>
-        </RadioGroup>
-      </FormItem>
-      <FormItem label="多选框">
-        <CheckboxGroup v-model="formItem.checkbox">
-          <Checkbox label="吃饭"></Checkbox>
-          <Checkbox label="睡觉"></Checkbox>
-          <Checkbox label="跑步"></Checkbox>
-          <Checkbox label="看电影"></Checkbox>
-        </CheckboxGroup>
-      </FormItem>
-      <FormItem label="开关">
-        <i-switch v-model="formItem.switch" size="large">
-          <span slot="open">开启</span>
-          <span slot="close">关闭</span>
-        </i-switch>
-      </FormItem>
-      <FormItem label="滑块">
-        <Slider v-model="formItem.slider" range></Slider>
-      </FormItem>
-      <FormItem label="文本域">
-        <Input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-               placeholder="请输入..."></Input>
-      </FormItem>
+
       <FormItem>
-        <Button type="primary">提交</Button>
-        <Button type="ghost" style="margin-left: 8px">取消</Button>
+        <Button type="primary" @click="onSearchSubmit(searchOptions.advancedSearchOptions)">搜索</Button>
+        <Button type="ghost" style="margin-left: 8px" @click="onCancel(searchOptions.advancedSearchOptions)">取消</Button>
       </FormItem>
     </Form>
   </div>
@@ -115,22 +105,53 @@
     data () {
       return {
         showAdvancedSearch: false,
-        formItem: {
-          input: '',
-          select: '',
-          radio: 'male',
-          checkbox: [],
-          switch: true,
-          date: '',
-          time: '',
-          slider: [20, 50],
-          textarea: ''
-        }
+        searchOption: null,
+        searchValue: null,
+        form: {}
       }
     },
     methods: {
       checkPermit (item) {
         return checkPermission(item)
+      },
+      onChangeSearchCriteria (value) {
+
+        this.searchValue = null
+      },
+      onSearchSubmit(advancedSearchOptions) {
+
+        let searchStr = '';
+        advancedSearchOptions.list.forEach(item => {
+          let value = this.form[item.field];
+          let operator = item.operator;
+          if ((value !== null && value !== undefined)) {
+            if ((typeof value === 'string')) {
+              value = value.trim();
+              if (value === '') {
+                return
+              }
+            }
+            let op = ':';
+            if (item.meta.type === 'dateRange') {
+              op = '@';
+              value = '"' + value
+            }
+            if (item.meta.type === 'input') {
+              value = '*' + value + '*'
+            }
+            if (operator === 'like') {
+              value = '*' + value + '*'
+            }
+            searchStr += item.field + op + value + ' and '
+          }
+        });
+        advancedSearchOptions.operation(searchStr.substring(0, searchStr.length - 5))
+      },
+      onCancel(advancedSearchOptions) {
+        this.showAdvancedSearch = false;
+        if (advancedSearchOptions.onCancel) {
+          advancedSearchOptions.onCancel()
+        }
       }
     }
   }
