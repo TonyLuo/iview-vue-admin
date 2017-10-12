@@ -67,6 +67,18 @@ export function assert (condition, msg) {
   if (!condition) throw new Error(`[vuex] ${msg}`)
 }
 
+export function formatDate (date) {
+  if (typeof date === 'string') {
+    date = new Date(date)
+  }
+  const y = date.getFullYear()
+  let m = date.getMonth() + 1
+  m = m < 10 ? '0' + m : m
+  let d = date.getDate()
+  d = d < 10 ? ('0' + d) : d
+  return y + '-' + m + '-' + d
+}
+
 export function checkPermission (item) {
 
   if (!item.meta || !item.meta.auth) return true // return true if the menu has no access control
@@ -92,7 +104,5 @@ util.title = function (title) {
   title = title ? title + ' - Home' : 'iView Admin'
   window.document.title = title
 }
-
-
 
 export default util

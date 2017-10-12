@@ -1,0 +1,39 @@
+<template>
+
+  <div>
+
+    <search-criteria :search-options="searchOptions">
+      <div slot="simple-search-btn-append">
+        <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
+      </div>
+    </search-criteria>
+    <div>
+      <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
+
+        <div slot="footer" style="padding-left:5px">
+          <Page :total="total" :current="1"
+                size="small"
+                placement="top"
+                @on-change="onPageChange"
+                @on-page-size-change="onPageSizeChange"
+                show-elevator show-total show-sizer></Page>
+        </div>
+      </Table>
+    </div>
+    <Modal
+      v-model="showEditModal"
+      title="普通的Modal对话框标题"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+    </Modal>
+  </div>
+
+</template>
+<style>
+
+</style>
+<script src="./baseView.js"></script>
+

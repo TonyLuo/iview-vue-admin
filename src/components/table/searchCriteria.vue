@@ -25,7 +25,8 @@
         </Select>
         <Input style="width: 180px;height:10px;float: left" v-model="searchValue"
                v-if="option.meta.type === 'input'"></Input>
-        <DatePicker v-model="searchValue" format="yyyy/MM/dd" type="daterange" placement="right-start" v-if="option.meta.type === 'dateRange'"
+        <DatePicker v-model="searchValue" format="yyyy/MM/dd" type="daterange" placement="right-start"
+                    v-if="option.meta.type === 'dateRange'"
                     placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
        <Button icon="ios-search" style="float: left" @click="option.meta.operation(searchValue)"></Button>
 
@@ -47,8 +48,8 @@
     <Form :model="form" :label-width="80" style="width: 380px;" v-if="showAdvancedSearch">
       <FormItem :label="option.name" v-for="option in searchOptions.advancedSearchOptions.list" :key="option.name">
         <Input v-if="option.meta.type ==='input'"
-                  :placeholder="`请输入${option.name}`"
-                  v-model="form[option.field]">
+               :placeholder="`请输入${option.name}`"
+               v-model="form[option.field]">
         </Input>
         <Select style="width: 180px;float: left" v-model="form[option.field]" v-if="option.meta.type === 'select'">
           <Option v-for="(item, index) in option.meta.selectOptions"
@@ -91,7 +92,7 @@
   }
 </style>
 <script>
-  import { checkPermission } from '../../libs/util'
+  import { checkPermission, formatDate } from '../../libs/util'
 
   export default {
     name: 'searchCriteria',
@@ -118,23 +119,24 @@
 
         this.searchValue = null
       },
-      onSearchSubmit(advancedSearchOptions) {
+      onSearchSubmit (advancedSearchOptions) {
 
-        let searchStr = '';
+        let searchStr = ''
         advancedSearchOptions.list.forEach(item => {
-          let value = this.form[item.field];
-          let operator = item.operator;
-          if ((value !== null && value !== undefined)) {
+          let value = this.form[item.field]
+          let operator = item.operator
+          if ((value !== null && value !== undefined && value !== '')) {
             if ((typeof value === 'string')) {
-              value = value.trim();
+              value = value.trim()
               if (value === '') {
                 return
               }
             }
-            let op = ':';
+            let op = ':'
             if (item.meta.type === 'dateRange') {
-              op = '@';
-              value = '"' + value
+              if(value[0]  === '' || value[1] === '') return
+              op = '@'
+              value = '"' + formatDate(value[0]) + 'T' + formatDate(value[1])
             }
             if (item.meta.type === 'input') {
               value = '*' + value + '*'
@@ -144,11 +146,11 @@
             }
             searchStr += item.field + op + value + ' and '
           }
-        });
+        })
         advancedSearchOptions.operation(searchStr.substring(0, searchStr.length - 5))
       },
-      onCancel(advancedSearchOptions) {
-        this.showAdvancedSearch = false;
+      onCancel (advancedSearchOptions) {
+        this.showAdvancedSearch = false
         if (advancedSearchOptions.onCancel) {
           advancedSearchOptions.onCancel()
         }

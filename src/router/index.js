@@ -4,6 +4,7 @@ import Home from '../views/home/home.vue'
 import Login from '../views/login.vue'
 import Profile from '../views/profile/profile.vue'
 import UserList from '../views/user/user-list.vue'
+import NewUserList from '../views/user/new-user-list.vue'
 import Table from '../views/table/table.vue'
 
 export const loginRouter = {
@@ -66,7 +67,7 @@ export const appRouter = [
         name: 'usr_new',
         path: 'new',
         icon: 'person-add',
-        component: Login,
+        component: NewUserList,
         meta: {
           auth: ['ROLE_USER']
         }
