@@ -41,8 +41,13 @@
 </template>
 <script>
   export default {
+    name: 'expandRow',
     props: {
-      row: Object
+      row: {
+        type: Object, default: function () {
+          return {}
+        }
+      }
     }
   }
 </script>

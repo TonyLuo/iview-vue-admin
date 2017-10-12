@@ -1,45 +1,39 @@
 <template>
 
-  <span>
+  <div>
+    <search-criteria></search-criteria>
+    <div>
+      <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
 
-    <Table :data="tableData1" :loading="loading" :columns="tableColumns" stripe>
-      <div slot="header" style="padding:5px">
-        <Select style="width: 80px;float: left">
-          <Option value="day">日活</Option>
-          <Option value="month">月活</Option>
-        </Select>
-        <Select style="width: 180px;float: left">
-          <Option value="day">日活</Option>
-          <Option value="month">月活xxxxxxx</Option>
-        </Select>
-        <div><Input style="width: 180px;height:10px;top: -8px;float: left"></Input></div>
-        <DatePicker :value="value2" format="yyyy/MM/dd" type="daterange" placement="bottom-end"
-                    placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
-        <Button icon="ios-search" style="float: left"></Button>
-      </div>
-      <div slot="footer" style="padding-left:5px">
-        <Page :total="total" :current="1"
-              size="small"
-              placement="top"
-              @on-change="onPageChange"
-              @on-page-size-change="onPageSizeChange"
-              show-elevator show-total show-sizer></Page>
-      </div>
-    </Table>
+        <div slot="footer" style="padding-left:5px">
+          <Page :total="total" :current="1"
+                size="small"
+                placement="top"
+                @on-change="onPageChange"
+                @on-page-size-change="onPageSizeChange"
+                show-elevator show-total show-sizer></Page>
+        </div>
+      </Table>
+    </div>
 
-  </span>
+
+  </div>
 
 </template>
 <style>
 
 </style>
 <script>
-  import expandRow from '../../components/table/expand-row.vue'
+  import expandRow from '../../components/table/expandRow.vue'
   import operation from '../../components/table/operation.vue'
+  import editModal from '../../components/table/editModal.vue'
+  import searchCriteria from '../../components/table/searchCriteria.vue'
+  import { checkPermission } from '../../libs/util'
+
   import userApi from '../../api/user'
 
   export default {
-    components: {expandRow},
+    components: {expandRow, operation, editModal, searchCriteria},
     data () {
       return {
         total: 0,
@@ -51,45 +45,87 @@
           queryMethod: null,
           queryValue: null
         },
-        tableData1: [],
-        tableColumns: [
-          {
-            type: 'expand',
-            width: 30,
-            render: (h, params) => {
-              return h(expandRow, {
-                props: {
-                  row: params.row
-                }
-              })
+        tableData: [],
+        statusList: [{value: true, label: '有效'}, {value: false, label: '失效'}],
+        searchOptions: {
+          simpleSearchOptions: [{
+            name: '状态',
+            templateOptions: {
+              value: '',
+              type: 'select',
+              selectOptions: this.statusList,
+              operation: this.searchByStatus,
+              width: 100
             }
           },
-          {
-            title: '操作',
-            key: 'action',
-            width: 100,
-            align: 'center',
-            render: (h, params) => {
-              return h(operation, {
-                props: {
-                  row: params.row,
-                  operation: () => {
-                    this.show(params.row)
-                  }
-                }
-              })
+            {
+              name: '帐号',
+              templateOptions: {
+                value: '',
+                type: 'input',
+                size: 'small',
+                operation: this.searchByLogin
+              }
             }
-          },
+          ]
+          // ,
+          // advancedSearchOptions: {
+          //     operation: this.advancedSearch,
+          //     onCancel: this.onRefresh,
+          //     list: [{
+          //         name: '单位类型',
+          //         field: 'type',
+          //         templateOptions: {
+          //             type: 'select',
+          //             selectOptions: this.organizationTypeList
+          //         }
+          //     },
+          //         {
+          //             name: '单位名称',
+          //             field: 'name',
+          //             templateOptions: {
+          //                 value: '',
+          //                 type: 'input',
+          //                 size: 'small'
+          //             }
+          //         }
+          //     ]
+          // }
+
+        },
+
+        operations: {
+          width: 80,
+          list: [
+            {
+              name: '编辑',
+              meta: {
+                iconName: 'edit',
+                operation: this.onUpdate
+              }
+            },
+            {
+              name: '删除',
+              meta: {
+                auth: ['ROLE_ADMIN'],
+                iconName: 'trash-b',
+                operation: this.onDelete
+              }
+            }]
+
+        },
+        fields: [
 
           {
             width: 150,
-
             title: '帐号',
-            key: 'login'
+            key: 'login',
+            meta: {
+              'hidden': true
+            }
           },
           {
             width: 150,
-
             title: '姓氏',
             key: 'firstName'
           },
@@ -100,9 +136,11 @@
           },
           {
             width: 300,
-
             title: '权限',
             key: 'authorities',
+            meta: {
+              auth: ['ROLE_ADMIN']
+            },
             render: (h, params) => {
               const row = params.row
               const authorities = row.authorities
@@ -142,14 +180,50 @@
               return h('div', this.formatDate(params.row.lastModifiedDate))
             }
           }
+        ],
+
+      }
+    },
+    computed: {
+      tableColumns: function () {
+        let columns = [
+          {
+            type: 'expand',
+            width: 30,
+            render: (h, params) => {
+              return h(expandRow, {
+                props: {
+                  row: params.row
+                }
+              })
+            }
+          },
+          {
+            title: '操作',
+            key: 'action',
+            width: this.operations.width,
+            align: 'center',
+            render: (h, params) => {
+              return h(operation, {
+                props: {
+                  row: params.row,
+                  options: this.operations
+                }
+              })
+            }
+          },
+          ...this.fields.filter(item => {
+            return !(item.meta && item.meta.hidden) && checkPermission(item)
+          })
         ]
+        return columns
       }
     },
     methods: {
       fetchData () {
         userApi.list(this.queryOptions).then(res => {
           this.total = res.data.content.length
-          this.tableData1 = res.data.content
+          this.tableData = res.data.content
         })
       },
       formatDate (strDate) {
@@ -161,14 +235,51 @@
         d = d < 10 ? ('0' + d) : d
         return y + '-' + m + '-' + d
       },
-      show (row) {
-        this.$Modal.info({
+      update (row) {
+        console.log('update', row)
+      },
+      delete (row) {
+        console.log('delete', row)
+      },
+      onUpdate (row) {
+
+        this.$Modal.confirm({
           title: '用户信息',
-          content: `帐号：${row.login}<br>`
+          closable: true,
+          scrollable: true,
+          onOk: () => {
+            this.update(row)
+          },
+          render: (h) => {
+            return h(editModal, {
+              props: {
+                row: row
+              }
+            })
+          }
         })
       },
-      remove (index) {
-        this.data6.splice(index, 1)
+      onDelete (row) {
+        this.$Modal.confirm({
+          title: '确认要删除吗？',
+          render: (h) => {
+            return h('p', [h('span', '帐号: '), h('span', row.login)])
+          },
+          onOk: () => {
+            this.delete(row)
+
+          },
+          onCancel: () => {
+          }
+        })
+
+      },
+      searchByStatus (value) {
+        console.log(`searchByStatus ${value}`)
+      },
+      searchByLogin (value) {
+        console.log(`searchByLogin ${value}`)
+
       },
       onPageChange (page) {
         this.queryOptions.page = page
@@ -188,7 +299,7 @@
       }
     },
     mounted () {
-      this.tableData1 = this.fetchData()
+      this.tableData = this.fetchData()
 
     }
   }

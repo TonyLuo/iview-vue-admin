@@ -3,7 +3,9 @@
 
   .operation-icon {
     color: @primary-color;
-    padding: 5px
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
   }
 
   .operation-icon:hover {
@@ -12,18 +14,36 @@
 </style>
 <template>
   <span>
-    <Icon type="edit" class="operation-icon" @click.native="operation" size="16"></Icon>
-    <Icon type="trash-b" class="operation-icon" @click.native="operation" size="16"></Icon>
+    <Icon v-for="item in options.list" v-if="checkPermit(item)"
+          :type="item.meta.iconName"
+          :color="item.meta.color"
+          class="operation-icon"
+          @click.native="item.meta.operation(row)"
+          :key="item.name"
+          size="16"></Icon>
   </span>
 </template>
 <script>
+  import { checkPermission } from '../../libs/util'
+
   export default {
+    name: 'operation',
     props: {
-      row: Object,
-      operation: Function
+      row: {
+        type: Object, default: function () {
+          return {}
+        }
+      },
+      options: {
+        type: Object, default: function () {
+          return {}
+        }
+      }
     },
     methods: {
-
+      checkPermit (item) {
+        return checkPermission(item)
+      }
     }
   }
 </script>
