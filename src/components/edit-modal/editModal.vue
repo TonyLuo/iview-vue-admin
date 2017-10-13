@@ -7,9 +7,17 @@
     @on-cancel="cancel">
     <Form :model="editForm" ref="editForm" class="ruleForm" :label-width="labelWidth">
       <span v-for="item in  fields" :key="item.key">
-         <FormItem :label="item.title" :prop="item.key">
-        <Input v-model="data[item.key]"></Input>
-      </FormItem>
+        <!--<edit-form-item :label="item.title"-->
+        <!--:prop="item.key"-->
+        <!--:value.sync="data[item.key]"-->
+        <!--:type="item.meta.type"-->
+        <!--v-model="data[item.key]"></edit-form-item>-->
+        <edit-form-item :data="data"
+                        :item="item"
+        ></edit-form-item>
+        <!--<FormItem :label="item.title" :prop="item.key">-->
+        <!--<Input v-model="data[item.key]"></Input>-->
+        <!--</FormItem>-->
 
         <!--<form-item v-if="item.meta && item.meta.component !== 'custom' "-->
         <!--:item="item"-->
@@ -52,12 +60,12 @@
 </template>
 
 <script>
-  import formItem from './formItem'
+  import editFormItem from './editFormItem.vue'
 
   export default {
     name: 'editModal',
     components: {
-      formItem
+      editFormItem
 
     },
 
