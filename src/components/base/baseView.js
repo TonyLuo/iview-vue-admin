@@ -178,6 +178,9 @@ export default {
       })
     },
     onRefresh () {
+      this.refresh()
+    },
+    refresh () {
       this.page = 1
       this.size = 10
       this.queryOptions.queryMethod = null

@@ -21,6 +21,7 @@
             :key="index"
             style="float: left">
         <Select style="width: 180px;float: left"
+                clearable
                 v-model="searchValue"
                 v-if="option.meta.type === 'select'">
           <Option v-for="(item, index) in option.meta.selectOptions"
@@ -34,7 +35,8 @@
         <DatePicker v-model="searchValue" format="yyyy/MM/dd" type="daterange" placement="right-start"
                     v-if="option.meta.type === 'dateRange'"
                     placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
-       <Button icon="ios-search" style="float: left" @click="option.meta.operation(searchValue)"></Button>
+       <Button icon="ios-search" style="margin-left:-4px;float: left"
+               @click="option.meta.operation(searchValue)"></Button>
 
       </span>
 
@@ -57,7 +59,10 @@
                :placeholder="`请输入${option.name}`"
                v-model="form[option.field]">
         </Input>
-        <Select style="width: 180px;float: left" v-model="form[option.field]" v-if="option.meta.type === 'select'">
+        <Select style="width: 180px;float: left"
+                clearable
+                v-model="form[option.field]"
+                v-if="option.meta.type === 'select'">
           <Option v-for="(item, index) in option.meta.selectOptions"
                   :value="item.value"
                   :key="item.value">
@@ -123,7 +128,7 @@
       },
       onChangeSearchCriteria (value) {
 
-        if(!value || value === ''){
+        if (!value || value === '') {
           this.$emit('clear')
         }
 

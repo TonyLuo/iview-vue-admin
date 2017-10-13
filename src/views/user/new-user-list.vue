@@ -167,15 +167,22 @@
     computed: {},
     methods: {
       searchByStatus (value) {
+        if (!value || value === '') {
+          this.refresh()
+        }
         this.advancedSearch(`activated:${Boolean(value)}`)
       },
       searchByLogin (value) {
-        if (!value || value.trim() === '') return
+        if (!value || value.trim() === '') {
+          this.refresh()
+        }
         this.advancedSearch(`login~${value}`)
 
       },
       searchByCreatedDate (value) {
-        if (!value[0] || !value[1] || value[0] === '' || value[1] === '') return
+        if (!value[0] || !value[1] || value[0] === '' || value[1] === '') {
+          this.refresh()
+        }
         let startDate = value[0]
         let endDate = value[1]
         startDate.setTime(startDate.setHours(startDate.getHours() - 24))
