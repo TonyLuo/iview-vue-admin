@@ -125,16 +125,21 @@
         advancedSearchOptions.list.forEach(item => {
           let value = this.form[item.field]
           let operator = item.operator
+          let valueType = item.meta.valueType
           if ((value !== null && value !== undefined && value !== '')) {
-            if ((typeof value === 'string')) {
+            if (valueType === 'Boolean') {
+              value = Boolean(value)
+            }
+            else if ((typeof value === 'string')) {
               value = value.trim()
               if (value === '') {
                 return
               }
             }
+
             let op = ':'
             if (item.meta.type === 'dateRange') {
-              if(value[0]  === '' || value[1] === '') return
+              if (!value[0] || !value[1] || value[0] === '' || value[1] === '') return
               op = '@'
               value = '"' + formatDate(value[0]) + 'T' + formatDate(value[1])
             }

@@ -42,7 +42,7 @@ export default {
       method: 'delete'
     });
   },
-  advancedSearch(params, searchStr) {
+  advancedSearch(searchStr, params) {
     let options = httpUtil.createQueryOption(params);
     return httpUtil.fetch({
       url: this.url + 'adv/' + encodeURIComponent(searchStr) + options,

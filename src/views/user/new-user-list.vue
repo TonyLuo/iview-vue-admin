@@ -121,12 +121,11 @@
               }
             },
             {
-              name: '更新时间',
+              name: '创建时间',
               meta: {
                 value: '',
                 type: 'dateRange',
-                size: 'small',
-                operation: this.searchByLogin
+                operation: this.searchByCreatedDate
               }
             }
           ],
@@ -138,9 +137,9 @@
               field: 'activated',
               meta: {
                 value: '',
+                valueType: 'Boolean',
                 type: 'select',
                 selectOptions: statusList,
-                operation: this.searchByStatus,
                 width: 100
               }
             },
@@ -150,8 +149,6 @@
                 meta: {
                   value: '',
                   type: 'input',
-                  size: 'small',
-                  operation: this.searchByLogin
                 }
               },
               {
@@ -159,9 +156,7 @@
                 field: 'lastModifiedDate',
                 meta: {
                   value: '',
-                  type: 'dateRange',
-                  size: 'small',
-                  operation: this.searchByLogin
+                  type: 'dateRange'
                 }
               }
             ]
@@ -172,88 +167,22 @@
       }
     },
     computed: {
-//      searchOptions: function () {
-//        return {
-//          simpleSearchOptions: [{
-//            name: '状态',
-//            meta: {
-//              value: '',
-//              type: 'select',
-//              selectOptions: this.statusList,
-//              operation: this.searchByStatus,
-//              width: 100
-//            }
-//          },
-//            {
-//              name: '帐号',
-//              meta: {
-//                value: '',
-//                type: 'input',
-//                size: 'small',
-//                operation: this.searchByLogin
-//              }
-//            },
-//            {
-//              name: '更新时间',
-//              meta: {
-//                value: '',
-//                type: 'dateRange',
-//                size: 'small',
-//                operation: this.searchByLogin
-//              }
-//            }
-//          ],
-//          advancedSearchOptions: {
-//            operation: this.advancedSearch,
-//            onCancel: this.onRefresh,
-//            list: [{
-//              name: '状态',
-//              field: 'activated',
-//              meta: {
-//                value: '',
-//                type: 'select',
-//                selectOptions: this.statusList,
-//                operation: this.searchByStatus,
-//                width: 100
-//              }
-//            },
-//              {
-//                name: '帐号',
-//                field: 'login',
-//                meta: {
-//                  value: '',
-//                  type: 'input',
-//                  size: 'small',
-//                  operation: this.searchByLogin
-//                }
-//              },
-//              {
-//                name: '更新时间',
-//                field: 'lastModifiedDate',
-//                meta: {
-//                  value: '',
-//                  type: 'dateRange',
-//                  size: 'small',
-//                  operation: this.searchByLogin
-//                }
-//              }
-//            ]
-//          }
-//
-//        }
-//      }
     },
     methods: {
       searchByStatus (value) {
-        console.log(`searchByStatus ${value}`)
+        this.advancedSearch(`activated:${Boolean(value)}`)
       },
       searchByLogin (value) {
-        console.log(`searchByLogin ${value}`)
+        if (!value || value.trim() === '') return;
+        this.advancedSearch(`login:${value}`)
 
       },
-      advancedSearch (searchStr) {
-        console.log('advancedSearch', searchStr)
-      },
+      searchByCreatedDate (value) {
+        if(!value[0] || !value[1] || value[0]  === '' || value[1] === '') return
+        let searchStr =  `createdDate@"${formatDate(value[0])}T${formatDate(value[0])}`
+        this.advancedSearch(searchStr)
+
+      }
     }
   }
 </script>

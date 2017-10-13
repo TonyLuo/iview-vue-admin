@@ -252,7 +252,7 @@ export default {
       if (this.api) {
         this.queryOptions.queryMethod = this.advancedSearch
         this.queryOptions.queryValue = searchStr
-        this.handleResponseData(this.api.advancedSearch(this.queryOptions, searchStr))
+        this.handleResponseData(this.api.advancedSearch(searchStr, this.queryOptions))
       }
     },
     fetchData () {
