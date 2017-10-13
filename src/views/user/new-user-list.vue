@@ -2,6 +2,7 @@
   import baseView from '../../components/base/baseView.vue'
   import userApi from '../../api/user.api'
   import { formatDate } from '../../libs/util'
+
   const statusList = [{value: 1, label: '有效'}, {value: 0, label: '失效'}]
 
   export default {
@@ -30,9 +31,6 @@
             }]
 
         },
-
-//        statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
-
         fields: [
 
           {
@@ -152,8 +150,8 @@
                 }
               },
               {
-                name: '更新时间',
-                field: 'lastModifiedDate',
+                name: '创建时间',
+                field: 'createdDate',
                 meta: {
                   value: '',
                   type: 'dateRange'
@@ -166,20 +164,24 @@
 
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       searchByStatus (value) {
         this.advancedSearch(`activated:${Boolean(value)}`)
       },
       searchByLogin (value) {
-        if (!value || value.trim() === '') return;
-        this.advancedSearch(`login:${value}`)
+        if (!value || value.trim() === '') return
+        this.advancedSearch(`login~${value}`)
 
       },
       searchByCreatedDate (value) {
-        if(!value[0] || !value[1] || value[0]  === '' || value[1] === '') return
-        let searchStr =  `createdDate@"${formatDate(value[0])}T${formatDate(value[0])}`
+        if (!value[0] || !value[1] || value[0] === '' || value[1] === '') return
+        let startDate = value[0]
+        let endDate = value[1]
+        startDate.setTime(startDate.setHours(startDate.getHours() - 24))
+        endDate.setTime(endDate.setHours(endDate.getHours() + 24))
+
+        let searchStr = `createdDate@"${formatDate(startDate)}T${formatDate(endDate)}`
         this.advancedSearch(searchStr)
 
       }

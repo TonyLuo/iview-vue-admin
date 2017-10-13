@@ -141,7 +141,14 @@
             if (item.meta.type === 'dateRange') {
               if (!value[0] || !value[1] || value[0] === '' || value[1] === '') return
               op = '@'
-              value = '"' + formatDate(value[0]) + 'T' + formatDate(value[1])
+
+              let startDate = value[0]
+              let endDate = value[1]
+              startDate.setTime(startDate.setHours(startDate.getHours() - 24))
+              endDate.setTime(endDate.setHours(endDate.getHours() + 24))
+
+              value = `"${formatDate(startDate)}T${formatDate(endDate)}`
+
             }
             if (item.meta.type === 'input') {
               value = '*' + value + '*'
