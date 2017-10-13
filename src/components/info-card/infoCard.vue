@@ -8,7 +8,7 @@
       </div>
       </Col>
       <Col span="16" class="height-100">
-      <div  class="align-middle" >
+      <div class="align-middle">
         <p :style="{color: color}" class="info-num">{{count}}</p>
         <p class="info-intro-text">{{ message }}</p>
       </div>

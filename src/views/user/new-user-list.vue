@@ -38,7 +38,9 @@
             title: '帐号',
             key: 'login',
             meta: {
-              'hidden': true
+              'hidden': true,
+              component: 'input',
+              rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
             }
           },
           {

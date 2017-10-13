@@ -21,15 +21,24 @@
         </div>
       </Table>
     </div>
-    <Modal
-      v-model="showEditModal"
-      title="普通的Modal对话框标题"
-      @on-ok="onOK"
-      @on-cancel="onClose">
-      <p>对话框内容</p>
-      <p>对话框内容</p>
-      <p>对话框内容</p>
-    </Modal>
+    <!--<Modal-->
+    <!--v-model="showEditModal"-->
+    <!--title="普通的Modal对话框标题"-->
+    <!--@on-ok="onOK"-->
+    <!--@on-cancel="onClose">-->
+    <!--<p>对话框内容</p>-->
+    <!--<p>对话框内容</p>-->
+    <!--<p>对话框内容</p>-->
+    <!--</Modal>-->
+    <edit-modal :visible.sync="showEditModal"
+                title="普通的Modal对话框标题dd"
+                :data="editForm"
+                :fields="fields"
+                @ok="onOK"
+                @calcel="onClose">
+
+    </edit-modal>
+
   </div>
 
 </template>

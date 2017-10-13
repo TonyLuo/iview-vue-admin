@@ -1,6 +1,6 @@
 import expandRow from '../../components/table/expandRow.vue'
 import operation from '../../components/table/operation.vue'
-import editModal from '../../components/table/editModal.vue'
+import editModal from '../../components/edit-modal/editModal.vue'
 import searchCriteria from '../../components/table/searchCriteria.vue'
 import { checkPermission } from '../../libs/util'
 
@@ -227,6 +227,7 @@ export default {
 
     // editModal operation
     onOK () {
+      console.log('ok')
       if (this.editModalStatus === 'create') {
         this.create(this.editForm)
       } else {
@@ -234,6 +235,8 @@ export default {
       }
     },
     onClose () {
+      console.log('close')
+
       this.closeEditModal()
     },
     onViewModelClose () {
