@@ -2,7 +2,7 @@
 
   <div>
 
-    <search-criteria :search-options="searchOptions">
+    <search-criteria :search-options="searchOptions" @clear="onRefresh()">
       <div slot="simple-search-btn-append">
         <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
       </div>

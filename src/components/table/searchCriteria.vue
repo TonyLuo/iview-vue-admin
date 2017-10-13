@@ -3,7 +3,10 @@
 
     <span v-if="!showAdvancedSearch">
 
-      <Select v-model="searchOption" @on-change="onChangeSearchCriteria" style="width: 150px;float: left"
+      <Select v-model="searchOption"
+              @on-change="onChangeSearchCriteria"
+              clearable
+              style="width: 150px;float: left"
               placeholder="请选择搜索条件">
         <Option
           v-for="item in searchOptions.simpleSearchOptions"
@@ -13,10 +16,13 @@
         </Option>
 
       </Select>
-      <span v-for="(option, index) in searchOptions.simpleSearchOptions" v-if="option.name === searchOption"
+      <span v-for="(option, index) in searchOptions.simpleSearchOptions"
+            v-if="option.name === searchOption"
             :key="index"
             style="float: left">
-        <Select style="width: 180px;float: left" v-model="searchValue" v-if="option.meta.type === 'select'">
+        <Select style="width: 180px;float: left"
+                v-model="searchValue"
+                v-if="option.meta.type === 'select'">
           <Option v-for="(item, index) in option.meta.selectOptions"
                   :value="item.value"
                   :key="item.value">
@@ -116,6 +122,10 @@
         return checkPermission(item)
       },
       onChangeSearchCriteria (value) {
+
+        if(!value || value === ''){
+          this.$emit('clear')
+        }
 
         this.searchValue = null
       },
