@@ -66,7 +66,7 @@
 
 </style>
 <script>
-  import user from '../api/user'
+  import user from '../api/user.api'
 
   export default {
     data () {

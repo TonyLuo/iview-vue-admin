@@ -42,7 +42,7 @@
   import searchCriteria from '../../components/table/searchCriteria.vue'
   import { checkPermission } from '../../libs/util'
 
-  import userApi from '../../api/user'
+  import userApi from '../../api/user.api'
 
   export default {
     components: {expandRow, operation, editModal, searchCriteria},

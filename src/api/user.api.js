@@ -9,6 +9,13 @@ export default {
       method: 'get'
     });
   },
+  fetchData (params) {
+    let options = httpUtil.createQueryOption(params);
+    return httpUtil.fetch({
+      url: this.url + 'all' + options,
+      method: 'get'
+    });
+  },
   create (data) {
     return httpUtil.fetch({
       url: `${this.url}/register`,

@@ -68,6 +68,7 @@ export function assert (condition, msg) {
 }
 
 export function formatDate (date) {
+  if (!date || date === '') return ''
   if (typeof date === 'string') {
     date = new Date(date)
   }

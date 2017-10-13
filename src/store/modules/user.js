@@ -1,6 +1,6 @@
 import * as types from '../mutation-types'
 import storage from './storage'
-import user from '../../api/user'
+import user from '../../api/user.api'
 
 const state = {
   userDetail: {},

@@ -8,10 +8,11 @@
       </div>
     </search-criteria>
     <div>
-      <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
+      <Table :data="data" :loading="loading" :columns="tableColumns" stripe>
 
         <div slot="footer" style="padding-left:5px">
-          <Page :total="total" :current="1"
+          <Page :total="total"
+                :current.sync="page"
                 size="small"
                 placement="top"
                 @on-change="onPageChange"
@@ -23,8 +24,8 @@
     <Modal
       v-model="showEditModal"
       title="普通的Modal对话框标题"
-      @on-ok="ok"
-      @on-cancel="cancel">
+      @on-ok="onOK"
+      @on-cancel="onClose">
       <p>对话框内容</p>
       <p>对话框内容</p>
       <p>对话框内容</p>

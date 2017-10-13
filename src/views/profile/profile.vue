@@ -26,7 +26,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import userApi from '../../api/user'
+  import userApi from '../../api/user.api'
 
   export default {
     data () {
@@ -84,12 +84,6 @@
     methods: {
       init () {
         this.profileForm = Object.assign({}, this.userInfo)
-//        this.$set(this.profileForm, 'id', this.userInfo.id)
-//        this.$set(this.profileForm, 'login', this.userInfo.login)
-//        this.$set(this.profileForm, 'authorities', this.userInfo.authorities)
-//        this.$set(this.profileForm, 'firstName', this.userInfo.firstName)
-//        this.$set(this.profileForm, 'lastName', this.userInfo.lastName)
-//        this.$set(this.profileForm, 'activated', this.userInfo.activated)
       },
       update (data) {
         userApi.update(data).then((res) => {
