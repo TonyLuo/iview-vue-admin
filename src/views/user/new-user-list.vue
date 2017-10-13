@@ -41,7 +41,6 @@
             meta: {
               'hidden': true,
               type: 'input',
-              disabled: true,
               rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
             }
           },
@@ -77,7 +76,7 @@
 
               return h('Tag', {
                 props: {
-                  color: row.activated ? 'blue' : 'red'
+                  color: row.activated ? 'blue' : 'gray'
                 }
               }, row.activated ? '有效' : '失效')
 
@@ -90,7 +89,7 @@
             meta: {
               auth: ['ROLE_ADMIN'],
               type: 'checkbox',
-              disabled: true,
+              disabled: false,
               optionList: authorityList
             },
             render: (h, params) => {
@@ -123,6 +122,7 @@
               return h('div', formatDate(params.row.createdDate))
             },
             meta: {
+              disabled: true,
               type: 'date',
             }
           },
@@ -135,6 +135,7 @@
               return h('div', formatDate(params.row.lastModifiedDate))
             },
             meta: {
+              disabled: true,
               type: 'date',
             }
           }
