@@ -2,13 +2,14 @@
   import baseView from '../../components/base/baseView.vue'
   import userApi from '../../api/user.api'
   import { formatDate } from '../../libs/util'
+  const statusList = [{value: 1, label: '有效'}, {value: 0, label: '失效'}]
 
   export default {
     name: 'newUserList',
     extends: baseView,
     data () {
       return {
-        api:userApi,
+        api: userApi,
         operations: {
           width: 80,
           list: [
@@ -30,7 +31,7 @@
 
         },
 
-        statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
+//        statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
 
         fields: [
 
@@ -99,17 +100,13 @@
             }
           }
         ],
-      }
-    },
-    computed: {
-      searchOptions: function () {
-        return {
+        searchOptions: {
           simpleSearchOptions: [{
             name: '状态',
             meta: {
               value: '',
               type: 'select',
-              selectOptions: this.statusList,
+              selectOptions: statusList,
               operation: this.searchByStatus,
               width: 100
             }
@@ -142,7 +139,7 @@
               meta: {
                 value: '',
                 type: 'select',
-                selectOptions: this.statusList,
+                selectOptions: statusList,
                 operation: this.searchByStatus,
                 width: 100
               }
@@ -171,9 +168,82 @@
           }
 
         }
+
       }
     },
-    methods:{
+    computed: {
+//      searchOptions: function () {
+//        return {
+//          simpleSearchOptions: [{
+//            name: '状态',
+//            meta: {
+//              value: '',
+//              type: 'select',
+//              selectOptions: this.statusList,
+//              operation: this.searchByStatus,
+//              width: 100
+//            }
+//          },
+//            {
+//              name: '帐号',
+//              meta: {
+//                value: '',
+//                type: 'input',
+//                size: 'small',
+//                operation: this.searchByLogin
+//              }
+//            },
+//            {
+//              name: '更新时间',
+//              meta: {
+//                value: '',
+//                type: 'dateRange',
+//                size: 'small',
+//                operation: this.searchByLogin
+//              }
+//            }
+//          ],
+//          advancedSearchOptions: {
+//            operation: this.advancedSearch,
+//            onCancel: this.onRefresh,
+//            list: [{
+//              name: '状态',
+//              field: 'activated',
+//              meta: {
+//                value: '',
+//                type: 'select',
+//                selectOptions: this.statusList,
+//                operation: this.searchByStatus,
+//                width: 100
+//              }
+//            },
+//              {
+//                name: '帐号',
+//                field: 'login',
+//                meta: {
+//                  value: '',
+//                  type: 'input',
+//                  size: 'small',
+//                  operation: this.searchByLogin
+//                }
+//              },
+//              {
+//                name: '更新时间',
+//                field: 'lastModifiedDate',
+//                meta: {
+//                  value: '',
+//                  type: 'dateRange',
+//                  size: 'small',
+//                  operation: this.searchByLogin
+//                }
+//              }
+//            ]
+//          }
+//
+//        }
+//      }
+    },
+    methods: {
       searchByStatus (value) {
         console.log(`searchByStatus ${value}`)
       },
@@ -181,8 +251,8 @@
         console.log(`searchByLogin ${value}`)
 
       },
-      advancedSearch(searchStr) {
-        console.log('advancedSearch',searchStr)
+      advancedSearch (searchStr) {
+        console.log('advancedSearch', searchStr)
       },
     }
   }

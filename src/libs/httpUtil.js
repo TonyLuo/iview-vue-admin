@@ -1,10 +1,9 @@
 /**
  * Created by Tony on 14/06/2017.
  */
-// import Vue from 'vue'
 import axios from 'axios';
 import store from '../store'
-
+import Message from 'iview/src/components/message';
 axios.defaults.baseURL = `${process.env.BASE_URL}/api`
 // http request 拦截器
 axios.interceptors.request.use(
@@ -30,6 +29,11 @@ axios.interceptors.response.use(
         case 401:
           // 401 清除token信息
           store.dispatch('logout');
+          break;
+        case 500:
+          Message.error('服务器出了小问题')
+          break;
+
 
       }
     }

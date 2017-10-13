@@ -5,35 +5,19 @@ import searchCriteria from '../../components/table/searchCriteria.vue'
 import { checkPermission } from '../../libs/util'
 
 export default {
-  name:'baseView',
+  name: 'baseView',
   components: {expandRow, operation, editModal, searchCriteria},
   data () {
     return {
-      api: {},
-      data: [],
-      total: null,
-      page: 1,
-      size: 10,
-      loading: false,
-
-      queryOptions: {
-        page: 1,
-        size: 10,
-        sortWay: null,
-        queryMethod: null,
-        queryValue: null
-      },
-      editModalStatus: '',
-      editModalTitleMap: {
-        update: '编辑',
-        create: '创建'
-      },
-      editForm: {},
-      showEditModal: false,
-
-
-      statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
-
+      //TODO override api, operations, fields, searchOptions in child page
+      api: null,
+      fields: [
+        {
+          width: 150,
+          title: 'ID',
+          key: 'id'
+        }
+      ],
       operations: {
         width: 80,
         list: [
@@ -54,18 +38,66 @@ export default {
           }]
 
       },
-      fields: [
-
-        {
-          width: 150,
-          title: 'ID',
-          key: 'id'
+      searchOptions: {
+        simpleSearchOptions: [
+          {
+            name: 'ID',
+            meta: {
+              value: '',
+              type: 'input',
+              size: 'small',
+              operation: this.searchById
+            }
+          }
+        ],
+        advancedSearchOptions: {
+          operation: this.advancedSearch,
+          onCancel: this.onRefresh,
+          list: [
+            {
+              name: '帐号',
+              field: 'id',
+              meta: {
+                value: '',
+                type: 'input',
+                size: 'small'
+              }
+            }
+          ]
         }
-      ],
+
+      },
+
+      //table options
+      loading: false,
+      tableData: [],
+      total: 0,
+      page: 1,
+      size: 10,
+
+      //query options
+      queryOptions: {
+        page: 1,
+        size: 10,
+        sortWay: null,
+        queryMethod: null,
+        queryValue: null
+      },
+
+      //edit modal options
+      editModalStatus: '',
+      editModalTitleMap: {
+        update: '编辑',
+        create: '创建'
+      },
+      editForm: {},
+      showEditModal: false
+
 
     }
   },
   computed: {
+    //dynamic generate the table columns based on the user role
     tableColumns: function () {
       let columns = [
         {
@@ -99,87 +131,57 @@ export default {
       ]
       return columns
     },
-    searchOptions: function () {
-      return {
-        simpleSearchOptions: [
-          {
-            name: 'ID',
-            meta: {
-              value: '',
-              type: 'input',
-              size: 'small',
-              operation: this.searchById
-            }
-          }
-        ],
-        advancedSearchOptions: {
-          operation: this.advancedSearch,
-          onCancel: this.onRefresh,
-          list: [
-            {
-              name: '帐号',
-              field: 'id',
-              meta: {
-                value: '',
-                type: 'input',
-                size: 'small'}
-            }
-          ]
-        }
-
-      }
-    }
   },
   methods: {
     // table operation
-    onSelectionChange(val) {
+    onSelectionChange (val) {
       this.multipleSelection = val
     },
 
-    onPageChange(page) {
-      this.queryOptions.page = page;
-      this.page = page;
+    onPageChange (page) {
+      this.queryOptions.page = page
+      this.page = page
       this.fetchData()
     },
 
-    onPageSizeChange(size) {
-      this.queryOptions.size = size;
-      this.size = size;
+    onPageSizeChange (size) {
+      this.queryOptions.size = size
+      this.size = size
       this.fetchData()
     },
-    onFilterChange(value, row) {
+    onFilterChange (value, row) {
       return row.activated === value
     },
-    onSortChange(sortWay) {
+    onSortChange (sortWay) {
       this.queryOptions.sortWay = {
         prop: sortWay.prop,
         order: sortWay.order
-      };
+      }
       this.fetchData()
     },
     // end table operation
 
-    handleResponseData(responseDataPromise) {
+    handleResponseData (responseDataPromise) {
 
       responseDataPromise.then((res) => {
-        this.data = [];
-        this.total = 0;
+        this.tableData = []
+        this.total = 0
         if (res.data && res.data.content) {
-          this.data = res.data.content;
+          this.tableData = res.data.content
           this.total = parseInt(res.data.totalElements, 10)
         }
         this.loading = false
       }).catch(() => {
-        this.loading = false;
-        this.data = [];
+        this.loading = false
+        this.tableData = []
         this.total = 0
       })
     },
-    onRefresh() {
-      this.page = 1;
-      this.size = 10;
-      this.queryOptions.queryMethod = null;
-      this.queryOptions.queryValue = null;
+    onRefresh () {
+      this.page = 1
+      this.size = 10
+      this.queryOptions.queryMethod = null
+      this.queryOptions.queryValue = null
       this.queryOptions = {
         page: 1,
         size: 10,
@@ -187,26 +189,25 @@ export default {
         queryMethod: null,
         queryValue: null
 
-      };
+      }
       this.fetchData()
     },
 
-    // end search criteria operation
+    // search criteria operation end
 
     // row operation
-    onCreate() {
-      this.editForm = {};
-      this.editModalStatus = 'create';
+    onCreate () {
+      this.editForm = {}
+      this.editModalStatus = 'create'
       this.openEditModal()
     },
-    onUpdate(row) {
-      this.editForm = Object.assign({}, row);  // 把clone对象付给editForm，避免editForm未提交form时就已经修改了row的值
-      this.editModalStatus = 'update';
+    onUpdate (row) {
+      this.editForm = Object.assign({}, row)  // 把clone对象付给editForm，避免editForm未提交form时就已经修改了row的值
+      this.editModalStatus = 'update'
       this.openEditModal()
     },
-
-    onDelete(row) {
-      let msg = row.name || row.id;
+    onDelete (row) {
+      let msg = row.name || row.id
 
       this.$Modal.confirm({
         title: '是否删除记录？',
@@ -219,38 +220,44 @@ export default {
         }
       })
     },
-
-    // end row operation
+    //row operation end
 
     // editModal operation
-    onOK() {
+    onOK () {
       if (this.editModalStatus === 'create') {
         this.create(this.editForm)
       } else {
         this.update(this.editForm)
       }
     },
-    onClose() {
+    onClose () {
       this.closeEditModal()
     },
-    onViewModelClose() {
+    onViewModelClose () {
       this.showViewModal = false
+    },
+    openEditModal () {
+      this.showEditModal = true
+    },
+    closeEditModal () {
+      // console.log('closeEditModal')
+      this.showEditModal = false
     },
     // end editModal operation
 
-    searchById(){
-
+    searchById (value) {
+      console.log('searchById', value)
     },
-    advancedSearch(searchStr) {
+    advancedSearch (searchStr) {
       if (this.api) {
-        this.queryOptions.queryMethod = this.advancedSearch;
-        this.queryOptions.queryValue = searchStr;
+        this.queryOptions.queryMethod = this.advancedSearch
+        this.queryOptions.queryValue = searchStr
         this.handleResponseData(this.api.advancedSearch(this.queryOptions, searchStr))
       }
     },
-    fetchData() {
+    fetchData () {
       if (this.api) {
-        this.loading = true;
+        this.loading = true
         if (this.queryOptions.queryMethod) {
           this.queryOptions.queryMethod(this.queryOptions.queryValue)
         } else {
@@ -259,40 +266,40 @@ export default {
       }
 
     },
-    create(data) {
+    create (data) {
       if (this.api) {
         this.api.create(data).then((res) => {
-          this.editForm.id = res.data.id; // 新建操作时没有ID，需要把生成的ID传递到editModal,作为ownerId，用于保存图片列表
-          this.fetchData();
-          this.closeEditModal();
-          this.afterCreate(data, res);
+          this.editForm.id = res.data.id // 新建操作时没有ID，需要把生成的ID传递到editModal,作为ownerId，用于保存图片列表
+          this.fetchData()
+          this.closeEditModal()
+          this.afterCreate(data, res)
           this.$Message.info('创建成功')
 
         })
       }
     },
-    afterCreate(data, res){
+    afterCreate (data, res) {
     },
 
-    update(data) {
+    update (data) {
       if (this.api) {
         this.api.update(data).then((res) => {
-          this.fetchData();
-          this.closeEditModal();
-          this.afterUpdate(data, res);
+          this.fetchData()
+          this.closeEditModal()
+          this.afterUpdate(data, res)
           this.$Message.info('编辑成功')
 
         })
       }
     },
-    afterUpdate(data, res){
+    afterUpdate (data, res) {
     },
 
-    delete(row) {
+    delete (row) {
       if (this.api) {
         this.api.delete(row.id
         ).then((res) => {
-          this.fetchData();
+          this.fetchData()
           this.afterDelete(row, res)
           this.$Message.info('删除成功')
 
@@ -300,15 +307,9 @@ export default {
       }
 
     },
-    afterDelete(id, res){
+    afterDelete (id, res) {
     },
-    openEditModal() {
-      this.showEditModal = true
-    },
-    closeEditModal() {
-      // console.log('closeEditModal')
-      this.showEditModal = false
-    }
+
   },
   mounted () {
     this.fetchData()
