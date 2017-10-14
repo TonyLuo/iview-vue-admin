@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 import store from '../store'
-import Message from 'iview/src/components/message';
+import Notice from 'iview/src/components/notice';
 
 axios.defaults.baseURL = `${process.env.BASE_URL}/api`
 // http request 拦截器
@@ -27,14 +27,30 @@ axios.interceptors.response.use(
   error => {
     if (error.response) {
       switch (error.response.status) {
+        case 400:
+          if (error.response && error.response.data && error.response.data.message) {
+            Notice.error(
+              {
+                title: error.response.data.message,
+                duration: 5,
+                closable: true
+              }
+            )
+          }
+          break;
         case 401:
           // 401 清除token信息
           store.dispatch('logout');
           break;
         case 500:
-          Message.error('服务器出了小问题')
+          Notice.error(
+            {
+              title: '服务器出了小问题',
+              duration: 5,
+              closable: true
+            }
+          )
           break;
-
 
       }
     }

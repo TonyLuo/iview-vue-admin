@@ -36,7 +36,7 @@
                     v-if="option.meta.type === 'dateRange'"
                     placeholder="选择日期" style="width: 200px;float: left"></DatePicker>
        <Button icon="ios-search" style="margin-left:-4px;float: left"
-               @click="option.meta.operation(searchValue)"></Button>
+               @click="onSearchBtnClick();option.meta.operation(searchValue)"></Button>
 
       </span>
 
@@ -77,7 +77,7 @@
       </FormItem>
 
       <FormItem>
-        <Button type="primary" @click="onSearchSubmit(searchOptions.advancedSearchOptions)">搜索</Button>
+        <Button type="primary" @click="onSearchBtnClick();onSearchSubmit(searchOptions.advancedSearchOptions)">搜索</Button>
         <Button type="ghost" style="margin-left: 8px" @click="onCancel(searchOptions.advancedSearchOptions)">取消</Button>
       </FormItem>
     </Form>
@@ -133,6 +133,9 @@
         }
 
         this.searchValue = null
+      },
+      onSearchBtnClick(){
+        this.$emit('search-btn-click')
       },
       onSearchSubmit (advancedSearchOptions) {
 

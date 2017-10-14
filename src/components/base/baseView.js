@@ -67,8 +67,6 @@ export default {
       loading: false,
       tableData: [],
       total: 0,
-      page: 1,
-      size: 10,
 
       //query options
       queryOptions: {
@@ -143,13 +141,11 @@ export default {
 
     onPageChange(page) {
       this.queryOptions.page = page
-      this.page = page
       this.fetchData()
     },
 
     onPageSizeChange(size) {
       this.queryOptions.size = size
-      this.size = size
       this.fetchData()
     },
     onFilterChange(value, row) {
@@ -184,8 +180,7 @@ export default {
       this.refresh()
     },
     refresh() {
-      this.page = 1
-      this.size = 10
+
       this.queryOptions.queryMethod = null
       this.queryOptions.queryValue = null
       this.queryOptions = {
@@ -253,7 +248,9 @@ export default {
       this.showEditModal = false
     },
     // end editModal operation
-
+    onSearchBtnClick(){
+      this.$set(this.queryOptions,"page",1) // reset the page to first page which click search button
+    },
     searchById(value) {
       console.log('searchById', value)
     },
