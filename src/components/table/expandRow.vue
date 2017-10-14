@@ -4,50 +4,36 @@
   }
 </style>
 <template>
-  <div>
-    <Row class="expand-row">
-      <Col span="8">
-      <span class="expand-key">帐号：</span>
-      <span class="expand-value">{{ row.login }}</span>
-      </Col>
-      <Col span="8">
-      <span class="expand-key">姓氏：</span>
-      <span class="expand-value">{{ row.firstName  }}</span>
-      </Col>
-      <Col span="8">
-      <span class="expand-key">名字：</span>
-      <span class="expand-value">{{ row.lastName }}</span>
-      </Col>
-
-    </Row>
-    <Row class="expand-row">
-      <Col span="8">
-      <span class="expand-key">权限：</span>
-      <span class="expand-value">{{ row.authorities }}</span>
-      </Col>
-
-      <Col span="8">
-      <span class="expand-key">创建时间	：</span>
-      <span class="expand-value">{{ row.createdDate }}</span>
-      </Col>
-      <Col span="8">
-      <span class="expand-key">更新时间：</span>
-      <span class="expand-value">{{ row.lastModifiedDate }}</span>
-      </Col>
+  <div style="width: 960px">
 
 
-    </Row>
+    <Col :span="24/colNum" v-for="column in fields" :key="column.key" style="float: left;padding: 4px">
+    <span class="expand-key" style="float: left;">{{column.title}}：</span>
+    <Cell style="float: left;"
+          :row="row"
+          :column="column"
+          :key="column.key"
+          >
+
+    </Cell>
+
+
+    </Col>
+
+
   </div>
 </template>
 <script>
+  import Cell from 'iview/src/components/table/cell.vue';
+
   export default {
     name: 'expandRow',
+    components: {Cell},
+
     props: {
-      row: {
-        type: Object, default: function () {
-          return {}
-        }
-      }
+      fields: Array,
+      row: Object,
+      colNum:{type:Number,default:2}
     }
   }
 </script>

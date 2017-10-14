@@ -12,6 +12,7 @@ export default {
       //TODO override api, operations, fields, searchOptions in child page
       api: null,
       fields: null,
+      expandColNum: 2,
       operations: {
         width: 80,
         list: [
@@ -100,7 +101,9 @@ export default {
           render: (h, params) => {
             return h(expandRow, {
               props: {
-                row: params.row
+                row: params.row,
+                fields: this.fields,
+                colNum:this.expandColNum
               }
             })
           }

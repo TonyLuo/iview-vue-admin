@@ -1,66 +1,27 @@
-<template>
-
-  <div>
-
-    <search-criteria :search-options="searchOptions">
-      <div slot="simple-search-btn-append">
-        <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
-      </div>
-    </search-criteria>
-    <div>
-      <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
-
-        <div slot="footer" style="padding-left:5px">
-          <Page :total="total" :current="1"
-                size="small"
-                placement="top"
-                @on-change="onPageChange"
-                @on-page-size-change="onPageSizeChange"
-                show-elevator show-total show-sizer></Page>
-        </div>
-      </Table>
-    </div>
-    <Modal
-      v-model="showEditModal"
-      title="普通的Modal对话框标题"
-      @on-ok="ok"
-      @on-cancel="cancel">
-      <p>对话框内容</p>
-      <p>对话框内容</p>
-      <p>对话框内容</p>
-    </Modal>
-  </div>
-
-</template>
-<style>
-
-</style>
 <script>
-  import expandRow from '../../components/table/expandRow.vue'
-  import operation from '../../components/table/operation.vue'
-  import editModal from '../../components/edit-modal/editModal.vue'
-  import searchCriteria from '../../components/table/searchCriteria.vue'
-  import { checkPermission } from '../../libs/util'
-
+  import baseView from '../../components/base/baseView.vue'
   import userApi from '../../api/user.api'
+  import {formatDate} from '../../libs/util'
+
+  const statusList = [{label: '有效', value: 1, color: 'blue'}, {label: '失效', value: 0, color: 'yellow'}]
+  const authorityList = [
+    {
+      label: '管理员',
+      value: 'ROLE_ADMIN',
+      color: 'blue'
+    },
+    {
+      label: '普通用户',
+      value: 'ROLE_USER',
+      color: 'green'
+    }]
 
   export default {
-    components: {expandRow, operation, editModal, searchCriteria},
-    data () {
+    name: 'newUserList',
+    extends: baseView,
+    data() {
       return {
-        showEditModal: false,
-        total: 0,
-        loading: false,
-        queryOptions: {
-          page: 1,
-          size: 10,
-          sortWay: null,
-          queryMethod: null,
-          queryValue: null
-        },
-        tableData: [],
-        statusList: [{value: 1, label: '有效'}, {value: 0, label: '失效'}],
-
+        api: userApi,
         operations: {
           width: 80,
           list: [
@@ -88,41 +49,95 @@
             title: '帐号',
             key: 'login',
             meta: {
-              'hidden': true
+              'hidden': true,
+              type: 'input',
+              rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
             }
           },
           {
             width: 150,
             title: '姓氏',
-            key: 'firstName'
+            key: 'firstName',
+            sortable: 'custom',
+            meta: {
+              type: 'input',
+            }
           },
           {
             width: 150,
             title: '名字',
-            key: 'lastName'
+            key: 'lastName',
+            sortable: 'custom',
+            meta: {
+              type: 'input',
+            }
+          },
+          {
+            width: 150,
+            title: '状态',
+            key: 'activated',
+            filters: [
+              {
+                label: '有效',
+                value: 1
+              },
+              {
+                label: '失效',
+                value: 0
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              this.searchByStatus(value[0])
+            },
+            meta: {
+              type: 'switch',
+              option: {
+                openText: '有效',
+                closeText: '失效'
+              }
+            },
+            render: (h, params) => {
+              const row = params.row
+
+              return h('Tag', {
+                props: {
+                  color: row.activated ? 'blue' : 'yellow'
+                }
+              }, row.activated ? '有效' : '失效')
+
+            }
           },
           {
             width: 300,
             title: '权限',
             key: 'authorities',
             meta: {
-              auth: ['ROLE_ADMIN']
+              auth: ['ROLE_ADMIN'],
+              type: 'checkbox',
+              disabled: false,
+              optionList: authorityList
             },
             render: (h, params) => {
               const row = params.row
               const authorities = row.authorities
-
               return h('span',
                 [
                   authorities.map(item => {
-                    const color = item === 'ROLE_ADMIN' ? 'blue' : item === 'ROLE_USER' ? 'green' : 'red'
-                    const text = item === 'ROLE_ADMIN' ? '管理员' : item === 'ROLE_USER' ? '用户' : '其他'
-                    return h('Tag', {
-                      props: {
-                        type: 'dot',
-                        color: color
-                      }
-                    }, text)
+                   let auth = authorityList.filter(authority =>{
+                      return authority.value === item
+                    })[0]
+                    if(auth){
+                      return h('Tag', {
+                        props: {
+                          type: 'dot',
+                          color: auth.color
+                        }
+                      }, auth.label)
+                    }else{
+                      return h('span')
+                    }
+
                   })
                 ]
               )
@@ -135,7 +150,11 @@
             title: '创建时间',
             key: 'createdDate',
             render: (h, params) => {
-              return h('div', this.formatDate(params.row.createdDate))
+              return h('div', formatDate(params.row.createdDate))
+            },
+            meta: {
+              disabled: true,
+              type: 'date',
             }
           },
           {
@@ -144,55 +163,22 @@
             title: '更新时间',
             key: 'lastModifiedDate',
             render: (h, params) => {
-              return h('div', this.formatDate(params.row.lastModifiedDate))
+              return h('div', formatDate(params.row.lastModifiedDate))
+            },
+            meta: {
+              disabled: true,
+              type: 'date',
             }
           }
         ],
-
-      }
-    },
-    computed: {
-      tableColumns: function () {
-        let columns = [
-          {
-            type: 'expand',
-            width: 30,
-            render: (h, params) => {
-              return h(expandRow, {
-                props: {
-                  row: params.row
-                }
-              })
-            }
-          },
-          {
-            title: '操作',
-            key: 'action',
-            width: this.operations.width,
-            align: 'center',
-            render: (h, params) => {
-              return h(operation, {
-                props: {
-                  row: params.row,
-                  options: this.operations
-                }
-              })
-            }
-          },
-          ...this.fields.filter(item => {
-            return !(item.meta && item.meta.hidden) && checkPermission(item)
-          })
-        ]
-        return columns
-      },
-      searchOptions: function () {
-        return {
+        expandColNum: 3,
+        searchOptions: {
           simpleSearchOptions: [{
             name: '状态',
             meta: {
               value: '',
               type: 'select',
-              selectOptions: this.statusList,
+              selectOptions: statusList,
               operation: this.searchByStatus,
               width: 100
             }
@@ -207,156 +193,82 @@
               }
             },
             {
-              name: '更新时间',
+              name: '创建时间',
               meta: {
                 value: '',
                 type: 'dateRange',
-                size: 'small',
-                operation: this.searchByLogin
+                operation: this.searchByCreatedDate
               }
             }
           ],
-           advancedSearchOptions: {
-               operation: this.advancedSearch,
-               onCancel: this.onRefresh,
-               list: [{
-                 name: '状态',
-                 field: 'activated',
-                 meta: {
-                   value: '',
-                   type: 'select',
-                   selectOptions: this.statusList,
-                   operation: this.searchByStatus,
-                   width: 100
-                 }
-               },
-                 {
-                   name: '帐号',
-                   field: 'login',
-                   meta: {
-                     value: '',
-                     type: 'input',
-                     size: 'small',
-                     operation: this.searchByLogin
-                   }
-                 },
-                 {
-                   name: '更新时间',
-                   field: 'lastModifiedDate',
-                   meta: {
-                     value: '',
-                     type: 'dateRange',
-                     size: 'small',
-                     operation: this.searchByLogin
-                   }
-                 }
-               ]
-           }
-
-        }
-      }
-    },
-    methods: {
-      fetchData () {
-        userApi.list(this.queryOptions).then(res => {
-          this.total = res.data.content.length
-          this.tableData = res.data.content
-        })
-      },
-      formatDate (strDate) {
-        const date = new Date(strDate)
-        const y = date.getFullYear()
-        let m = date.getMonth() + 1
-        m = m < 10 ? '0' + m : m
-        let d = date.getDate()
-        d = d < 10 ? ('0' + d) : d
-        return y + '-' + m + '-' + d
-      },
-      ok () {
-        this.$Message.info('点击了确定')
-      },
-      cancel () {
-        this.$Message.info('点击了取消')
-      },
-      create (row) {
-        console.log('create', row)
-      },
-      update (row) {
-        console.log('update', row)
-      },
-      delete (row) {
-        console.log('delete', row)
-      },
-      onCreate () {
-        console.log('oncreate')
-        this.showEditModal = true
-      },
-      onUpdate (row) {
-        this.showEditModal = true
-//        this.$Modal.confirm({
-//          title: '用户信息',
-//          closable: true,
-//          scrollable: true,
-//          onOk: () => {
-//            this.update(row)
-//          },
-//          render: (h) => {
-//            return h(editModal, {
-//              props: {
-//                row: row
-//              }
-//            })
-//          }
-//        })
-      },
-      onDelete (row) {
-        this.$Modal.confirm({
-          title: '确认要删除吗？',
-          render: (h) => {
-            return h('p', [h('span', '帐号: '), h('span', row.login)])
-          },
-          onOk: () => {
-            this.delete(row)
-
-          },
-          onCancel: () => {
+          advancedSearchOptions: {
+            operation: this.advancedSearch,
+            onCancel: this.onRefresh,
+            list: [{
+              name: '状态',
+              field: 'activated',
+              meta: {
+                value: '',
+                valueType: 'Boolean',
+                type: 'select',
+                selectOptions: statusList,
+                width: 100
+              }
+            },
+              {
+                name: '帐号',
+                field: 'login',
+                meta: {
+                  value: '',
+                  type: 'input',
+                }
+              },
+              {
+                name: '创建时间',
+                field: 'createdDate',
+                meta: {
+                  value: '',
+                  type: 'dateRange'
+                }
+              }
+            ]
           }
-        })
 
-      },
-      searchByStatus (value) {
-        console.log(`searchByStatus ${value}`)
-      },
-      searchByLogin (value) {
-        console.log(`searchByLogin ${value}`)
-
-      },
-      advancedSearch(searchStr) {
-        console.log('advancedSearch',searchStr)
-      },
-      onRefresh(){
-
-      },
-      onPageChange (page) {
-        this.queryOptions.page = page
-        this.fetchData()
-      },
-
-      onPageSizeChange (size) {
-        this.queryOptions.size = size
-        this.fetchData()
-      },
-      onSortChange (sortWay) {
-        this.queryOptions.sortWay = {
-          prop: sortWay.prop,
-          order: sortWay.order
         }
-        this.fetchData()
+
       }
     },
-    mounted () {
-      this.tableData = this.fetchData()
+    computed: {},
+    methods: {
+      searchByStatus(value) {
+        if (value === null || value === undefined || value === '') {
+          this.refresh()
+          return
+        }
+        this.advancedSearch(`activated:${Boolean(value)}`)
+      },
+      searchByLogin(value) {
+        if (!value || value.trim() === '') {
+          this.refresh()
+          return
+        }
+        this.advancedSearch(`login~${value}`)
 
+      },
+      searchByCreatedDate(value) {
+        if (!value[0] || !value[1] || value[0] === '' || value[1] === '') {
+          this.refresh()
+          return
+        }
+        let startDate = value[0]
+        let endDate = value[1]
+//        startDate.setTime(startDate.setHours(startDate.getHours() - 24))
+//        endDate.setTime(endDate.setHours(endDate.getHours() + 24))
+
+        let searchStr = `createdDate@"${formatDate(startDate)}T${formatDate(endDate)}`
+        this.advancedSearch(searchStr)
+
+      }
     }
   }
 </script>
