@@ -25,7 +25,7 @@
       </Table>
     </div>
     <edit-modal :visible.sync="showEditModal"
-                title="普通的Modal对话框标题dd"
+                :title="editModalTitleMap[editModalStatus]"
                 :data="editForm"
                 :fields="fields"
                 @ok="onOK"
