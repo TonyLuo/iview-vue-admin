@@ -3,9 +3,10 @@
     <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
       <template v-if="item.status === 'finished'">
         <img :src="item.url">
-        <div class="demo-upload-list-cover">
-          <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-          <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+        <div class="demo-upload-list-cover" @click="handleView(item)">
+          <Icon type="ios-close" @click.native="handleRemove(item,$event)" class="remove-btn"></Icon>
+          <!--<Icon type="ios-eye-outline" ></Icon>-->
+
         </div>
       </template>
       <template v-else>
@@ -24,21 +25,29 @@
       :before-upload="handleBeforeUpload"
       multiple
       type="drag"
-      action="//jsonplaceholder.typicode.com/posts/"
+      :action="action"
+      :data="uploadParams"
       style="display: inline-block;width:58px;">
       <div style="width: 58px;height:58px;line-height: 58px;">
         <Icon type="camera" size="20"></Icon>
       </div>
     </Upload>
     <Modal title="查看图片" v-model="visible">
-      <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
+      <!--<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">-->
+      <img :src="fileUrl" v-if="visible" style="width: 100%">
     </Modal>
   </span>
 </template>
 <script>
+  import qiniu from '../../libs/qiniu'
+
   export default {
     data() {
       return {
+//        action:"//jsonplaceholder.typicode.com/posts/"
+        action: 'https://upload-z2.qbox.me',
+        uploadParams: {token: ''},
+        uploadDomainName: 'http://ov8e12r3a.bkt.clouddn.com/',
         defaultList: [
           {
             'name': 'a42bdcc1178e62b4694c830f028db5c0',
@@ -49,25 +58,30 @@
             'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
           }
         ],
-        imgName: '',
+        fileUrl: '',
         visible: false,
         uploadList: []
       }
     },
     methods: {
-      handleView(name) {
-        this.imgName = name;
+      handleView(file) {
+        this.fileUrl = file.url
         this.visible = true;
       },
-      handleRemove(file) {
+      handleRemove(file, $event) {
+        $event.stopPropagation()
         // 从 upload 实例删除数据
         const fileList = this.$refs.upload.fileList;
         this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
       },
       handleSuccess(res, file) {
+        const url = this.uploadDomainName + res.key
+        file.url = url
+        file.key = res.key
+        file.name = res.key
         // 因为上传过程为实例，这里模拟添加 url
-        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+//        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
+//        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
       },
       handleFormatError(file) {
         this.$Notice.warning({
@@ -87,11 +101,28 @@
           this.$Notice.warning({
             title: '最多只能上传 5 张图片。'
           });
+        } else {
+          return new Promise((resolve, reject) => {
+            qiniu.getUploadToken().then(uploadToken => {
+              const token = uploadToken.token
+              this.uploadDomainName = uploadToken.domain_name
+              this.uploadParams.token = token
+
+//              let fileExtension = '.' + file.name.split('.').pop()
+//              this.uploadParams.key = this.user.id + fileExtension;
+              resolve(true)
+            }).catch(err => {
+              /* eslint-disable prefer-promise-reject-errors */
+              reject(false)
+            })
+          })
         }
+
         return check;
       }
     },
     mounted() {
+
       this.uploadList = this.$refs.upload.fileList;
     }
   }
@@ -129,6 +160,8 @@
 
   .demo-upload-list:hover .demo-upload-list-cover {
     display: block;
+    cursor: pointer;
+
   }
 
   .demo-upload-list-cover i {
@@ -136,5 +169,12 @@
     font-size: 20px;
     cursor: pointer;
     margin: 0 2px;
+  }
+
+  .demo-upload-list-cover .remove-btn {
+    left: 0px;
+    top: 0px;
+    opacity: 0.7;
+    position: absolute;
   }
 </style>
