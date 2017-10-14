@@ -2,22 +2,16 @@ import expandRow from '../../components/table/expandRow.vue'
 import operation from '../../components/table/operation.vue'
 import editModal from '../../components/edit-modal/editModal.vue'
 import searchCriteria from '../../components/table/searchCriteria.vue'
-import { checkPermission } from '../../libs/util'
+import {checkPermission, warn} from '../../libs/util'
 
 export default {
   name: 'baseView',
   components: {expandRow, operation, editModal, searchCriteria},
-  data () {
+  data() {
     return {
       //TODO override api, operations, fields, searchOptions in child page
       api: null,
-      fields: [
-        {
-          width: 150,
-          title: 'ID',
-          key: 'id'
-        }
-      ],
+      fields: null,
       operations: {
         width: 80,
         list: [
@@ -133,35 +127,41 @@ export default {
     },
   },
   methods: {
+
+    checkInitialization() {
+      warn(this.api === null, '[baseView] api is not initialized properly')
+      warn(this.fields === null, '[baseView] fields is not initialized properly')
+
+    },
     // table operation
-    onSelectionChange (val) {
+    onSelectionChange(val) {
       this.multipleSelection = val
     },
 
-    onPageChange (page) {
+    onPageChange(page) {
       this.queryOptions.page = page
       this.page = page
       this.fetchData()
     },
 
-    onPageSizeChange (size) {
+    onPageSizeChange(size) {
       this.queryOptions.size = size
       this.size = size
       this.fetchData()
     },
-    onFilterChange (value, row) {
+    onFilterChange(value, row) {
       return row.activated === value
     },
-    onSortChange (sortWay) {
+    onSortChange(sortWay) {
       this.queryOptions.sortWay = {
-        prop: sortWay.prop,
+        prop: sortWay.key,
         order: sortWay.order
       }
       this.fetchData()
     },
     // end table operation
 
-    handleResponseData (responseDataPromise) {
+    handleResponseData(responseDataPromise) {
 
       responseDataPromise.then((res) => {
         this.tableData = []
@@ -177,10 +177,10 @@ export default {
         this.total = 0
       })
     },
-    onRefresh () {
+    onRefresh() {
       this.refresh()
     },
-    refresh () {
+    refresh() {
       this.page = 1
       this.size = 10
       this.queryOptions.queryMethod = null
@@ -199,17 +199,17 @@ export default {
     // search criteria operation end
 
     // row operation
-    onCreate () {
+    onCreate() {
       this.editForm = {}
       this.editModalStatus = 'create'
       this.openEditModal()
     },
-    onUpdate (row) {
+    onUpdate(row) {
       this.editForm = Object.assign({}, row)  // 把clone对象付给editForm，避免editForm未提交form时就已经修改了row的值
       this.editModalStatus = 'update'
       this.openEditModal()
     },
-    onDelete (row) {
+    onDelete(row) {
       let msg = row.name || row.id
 
       this.$Modal.confirm({
@@ -226,7 +226,7 @@ export default {
     //row operation end
 
     // editModal operation
-    onOK () {
+    onOK() {
       console.log('ok')
       if (this.editModalStatus === 'create') {
         this.create(this.editForm)
@@ -234,34 +234,34 @@ export default {
         this.update(this.editForm)
       }
     },
-    onClose () {
+    onClose() {
       console.log('close')
 
       this.closeEditModal()
     },
-    onViewModelClose () {
+    onViewModelClose() {
       this.showViewModal = false
     },
-    openEditModal () {
+    openEditModal() {
       this.showEditModal = true
     },
-    closeEditModal () {
+    closeEditModal() {
       // console.log('closeEditModal')
       this.showEditModal = false
     },
     // end editModal operation
 
-    searchById (value) {
+    searchById(value) {
       console.log('searchById', value)
     },
-    advancedSearch (searchStr) {
+    advancedSearch(searchStr) {
       if (this.api) {
         this.queryOptions.queryMethod = this.advancedSearch
         this.queryOptions.queryValue = searchStr
         this.handleResponseData(this.api.advancedSearch(searchStr, this.queryOptions))
       }
     },
-    fetchData () {
+    fetchData() {
       if (this.api) {
         this.loading = true
         if (this.queryOptions.queryMethod) {
@@ -272,7 +272,7 @@ export default {
       }
 
     },
-    create (data) {
+    create(data) {
       if (this.api) {
         this.api.create(data).then((res) => {
           this.editForm.id = res.data.id // 新建操作时没有ID，需要把生成的ID传递到editModal,作为ownerId，用于保存图片列表
@@ -284,10 +284,10 @@ export default {
         })
       }
     },
-    afterCreate (data, res) {
+    afterCreate(data, res) {
     },
 
-    update (data) {
+    update(data) {
       if (this.api) {
         this.api.update(data).then((res) => {
           this.fetchData()
@@ -298,10 +298,10 @@ export default {
         })
       }
     },
-    afterUpdate (data, res) {
+    afterUpdate(data, res) {
     },
 
-    delete (row) {
+    delete(row) {
       if (this.api) {
         this.api.delete(row.id
         ).then((res) => {
@@ -313,11 +313,12 @@ export default {
       }
 
     },
-    afterDelete (id, res) {
+    afterDelete(id, res) {
     },
 
   },
-  mounted () {
+  mounted() {
+    this.checkInitialization()
     this.fetchData()
   }
 }

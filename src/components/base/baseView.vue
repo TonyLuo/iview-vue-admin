@@ -8,7 +8,10 @@
       </div>
     </search-criteria>
     <div>
-      <Table :data="tableData" :loading="loading" :columns="tableColumns" stripe>
+      <Table :data="tableData"
+             :loading="loading"
+             :columns="tableColumns"
+             @on-sort-change="onSortChange" stripe>
 
         <div slot="footer" style="padding-left:5px">
           <Page :total="total"

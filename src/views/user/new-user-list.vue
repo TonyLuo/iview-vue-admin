@@ -48,6 +48,7 @@
             width: 150,
             title: '姓氏',
             key: 'firstName',
+            sortable: 'custom',
             meta: {
               type: 'input',
             }
@@ -56,6 +57,7 @@
             width: 150,
             title: '名字',
             key: 'lastName',
+            sortable: 'custom',
             meta: {
               type: 'input',
             }
@@ -64,6 +66,21 @@
             width: 150,
             title: '状态',
             key: 'activated',
+            filters: [
+              {
+                label: '有效',
+                value: 1
+              },
+              {
+                label: '失效',
+                value: 0
+              }
+            ],
+            filterMultiple: false,
+            filterRemote (value, row) {
+              console.log(value[0])
+              this.searchByStatus(value[0])
+            },
             meta: {
               type: 'switch',
               option: {
@@ -209,14 +226,16 @@
     computed: {},
     methods: {
       searchByStatus(value) {
-        if (!value || value === '') {
+        if (value === null ||value === undefined || value === '') {
           this.refresh()
+          return
         }
         this.advancedSearch(`activated:${Boolean(value)}`)
       },
       searchByLogin(value) {
         if (!value || value.trim() === '') {
           this.refresh()
+          return
         }
         this.advancedSearch(`login~${value}`)
 
@@ -224,11 +243,12 @@
       searchByCreatedDate(value) {
         if (!value[0] || !value[1] || value[0] === '' || value[1] === '') {
           this.refresh()
+          return
         }
         let startDate = value[0]
         let endDate = value[1]
-        startDate.setTime(startDate.setHours(startDate.getHours() - 24))
-        endDate.setTime(endDate.setHours(endDate.getHours() + 24))
+//        startDate.setTime(startDate.setHours(startDate.getHours() - 24))
+//        endDate.setTime(endDate.setHours(endDate.getHours() + 24))
 
         let searchStr = `createdDate@"${formatDate(startDate)}T${formatDate(endDate)}`
         this.advancedSearch(searchStr)

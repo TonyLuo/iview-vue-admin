@@ -67,6 +67,12 @@ export function assert (condition, msg) {
   if (!condition) throw new Error(`[vuex] ${msg}`)
 }
 
+export function warn (condition, msg) {
+  if (process.env.NODE_ENV !== 'production'){
+    if (condition) console.error(`[Application warn]: ${msg}`)
+  }
+}
+
 export function formatDate (date) {
   if (!date || date === '') return ''
   if (typeof date === 'string') {
