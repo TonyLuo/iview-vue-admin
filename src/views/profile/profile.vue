@@ -1,6 +1,9 @@
 <template>
 
   <Form :model="profileForm" :rules="profileRules" ref="profileForm" class="ruleForm" :label-width="80">
+    <FormItem label="头像">
+      <avatar></avatar>
+    </FormItem>
     <FormItem label="姓氏" prop="firstName">
       <Input v-model="profileForm.firstName"></Input>
     </FormItem>
@@ -25,11 +28,13 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import {mapGetters} from 'vuex'
   import userApi from '../../api/user.api'
+  import avatar from '../../components/form-type/image.vue'
 
   export default {
-    data () {
+    components: {avatar},
+    data() {
       let validatePass = (rule, value, callback) => {
 
         this.$refs.profileForm.validateField('checkPass')
@@ -71,27 +76,27 @@
       }
     },
     watch: {
-      userInfo () {
+      userInfo() {
         this.profileForm = Object.assign({}, this.userInfo)
       }
     },
-    mounted () {
+    mounted() {
       this.init()
     },
     computed: mapGetters({
       userInfo: 'userDetail'
     }),
     methods: {
-      init () {
+      init() {
         this.profileForm = Object.assign({}, this.userInfo)
       },
-      update (data) {
+      update(data) {
         userApi.update(data).then((res) => {
           this.$store.commit('SET_USER', res.data)
           this.$Message.success('更新成功!')
         })
       },
-      submitForm (formName) {
+      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.update(this.profileForm)
@@ -102,7 +107,7 @@
           }
         })
       },
-      handleReset (name) {
+      handleReset(name) {
         this.$refs[name].resetFields()
       }
     }
