@@ -42,6 +42,15 @@ axios.interceptors.response.use(
           // 401 清除token信息
           store.dispatch('logout');
           break;
+        case 403:
+          Notice.error(
+            {
+              title: '没有操作权限',
+              duration: 5,
+              closable: true
+            }
+          )
+          break;
         case 500:
           Notice.error(
             {

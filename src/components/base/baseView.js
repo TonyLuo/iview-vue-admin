@@ -92,6 +92,9 @@ export default {
   computed: {
     //dynamic generate the table columns based on the user role
     tableColumns: function () {
+    this.fields = this.fields.filter(item => {
+        return checkPermission(item)
+      })
       let columns = [
         {
           type: 'expand',
@@ -121,7 +124,7 @@ export default {
           }
         },
         ...this.fields.filter(item => {
-          return !(item.meta && item.meta.hidden) && checkPermission(item)
+          return !(item.meta && item.meta.hidden)
         })
       ]
       return columns
