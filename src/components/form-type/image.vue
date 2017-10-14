@@ -42,28 +42,74 @@
   import qiniu from '../../libs/qiniu'
 
   export default {
+    props: {
+      value: {
+        type: [Array, String]
+      },
+      isSingleFile: {type: Boolean, default: false}
+    },
     data() {
       return {
 //        action:"//jsonplaceholder.typicode.com/posts/"
         action: 'https://upload-z2.qbox.me',
         uploadParams: {token: ''},
         uploadDomainName: 'http://ov8e12r3a.bkt.clouddn.com/',
-        defaultList: [
-          {
-            'name': 'a42bdcc1178e62b4694c830f028db5c0',
-            'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-          },
-          {
-            'name': 'bc7521e033abdd1e92222d733590f104',
-            'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-          }
-        ],
+//        defaultList: [
+////          {
+////            'name': 'a42bdcc1178e62b4694c830f028db5c0',
+////            'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+////          },
+////          {
+////            'name': 'bc7521e033abdd1e92222d733590f104',
+////            'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+////          }
+//        ],
         fileUrl: '',
         visible: false,
         uploadList: []
       }
     },
+    computed: {
+      defaultList() {
+//        return this.value
+
+        if (this.isSingleFile) {
+          let list = []
+          let file = {}
+          this.$set(file, 'url', this.value)
+          list.push(file)
+          return list
+
+        } else {
+          return this.value
+        }
+      }
+    },
     methods: {
+      init() {
+        if (this.isSingleFile) {
+          if (this.value) {
+
+//            this.defaultList.push({url: this.value})
+            this.$refs.upload.fileList.push({
+              'name': 'a42bdcc1178e62b4694c830f028db5c0',
+              'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+            })
+          }
+        } else {
+          this.defaultList = this.value
+        }
+      },
+      handleFileChange() {
+        if (this.isSingleFile) {
+
+          this.$emit('input', this.$refs.upload.fileList[0] ? this.$refs.upload.fileList[0].url : null)
+
+        } else {
+          this.$emit('input', this.$refs.upload.fileList)
+
+        }
+      },
       handleView(file) {
         this.fileUrl = file.url
         this.visible = true;
@@ -73,12 +119,14 @@
         // 从 upload 实例删除数据
         const fileList = this.$refs.upload.fileList;
         this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+        this.handleFileChange()
       },
       handleSuccess(res, file) {
         const url = this.uploadDomainName + res.key
         file.url = url
         file.key = res.key
         file.name = res.key
+        this.handleFileChange()
         // 因为上传过程为实例，这里模拟添加 url
 //        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
 //        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
@@ -121,9 +169,17 @@
         return check;
       }
     },
-    mounted() {
+    watch: {
+      value() {
+//        this.init()
+      }
+    },
 
+    mounted() {
+//      this.init()
+      console.log(this.value)
       this.uploadList = this.$refs.upload.fileList;
+//      this.uploadList = this.defaultList;
     }
   }
 </script>

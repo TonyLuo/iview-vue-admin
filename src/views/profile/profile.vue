@@ -2,7 +2,7 @@
 
   <Form :model="profileForm" :rules="profileRules" ref="profileForm" class="ruleForm" :label-width="80">
     <FormItem label="头像">
-      <avatar></avatar>
+      <image-item v-model="profileForm.imageUrl" :isSingleFile="true"></image-item>
     </FormItem>
     <FormItem label="姓氏" prop="firstName">
       <Input v-model="profileForm.firstName"></Input>
@@ -30,10 +30,10 @@
 <script>
   import {mapGetters} from 'vuex'
   import userApi from '../../api/user.api'
-  import avatar from '../../components/form-type/image.vue'
+  import imageItem from '../../components/form-type/image.vue'
 
   export default {
-    components: {avatar},
+    components: {imageItem},
     data() {
       let validatePass = (rule, value, callback) => {
 
@@ -77,17 +77,32 @@
     },
     watch: {
       userInfo() {
+//        console.log(this.userInfo)
+
+//        this.$set(this.profileForm, 'id', this.userInfo.id)
+//        this.$set(this.profileForm, 'login', this.userInfo.login)
+//        this.$set(this.profileForm, 'authorities', this.userInfo.authorities)
+//        this.$set(this.profileForm, 'firstName', this.userInfo.firstName)
+//        this.$set(this.profileForm, 'lastName', this.userInfo.lastName)
+//        this.$set(this.profileForm, 'activated', this.userInfo.activated)
+//        this.$set(this.profileForm, 'imageUrl', this.userInfo.imageUrl)
         this.profileForm = Object.assign({}, this.userInfo)
       }
     },
     mounted() {
       this.init()
     },
-    computed: mapGetters({
-      userInfo: 'userDetail'
-    }),
+    computed: {
+      ...mapGetters({
+        userInfo: 'userDetail'
+      }),
+      imageUrl() {
+        return [{url: this.userInfo.imageUrl}]
+      }
+    },
     methods: {
       init() {
+        console.log(this.userInfo)
         this.profileForm = Object.assign({}, this.userInfo)
       },
       update(data) {
