@@ -78,7 +78,6 @@
             ],
             filterMultiple: false,
             filterRemote (value, row) {
-              console.log(value[0])
               this.searchByStatus(value[0])
             },
             meta: {
