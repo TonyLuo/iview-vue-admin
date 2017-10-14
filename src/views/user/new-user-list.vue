@@ -76,7 +76,7 @@
 
               return h('Tag', {
                 props: {
-                  color: row.activated ? 'blue' : 'gray'
+                  color: row.activated ? 'blue' : 'yellow'
                 }
               }, row.activated ? '有效' : '失效')
 
