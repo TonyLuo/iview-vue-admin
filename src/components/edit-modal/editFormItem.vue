@@ -1,34 +1,30 @@
 <template>
-  <div>
 
+  <FormItem :label="item.title" :prop="item.key">
 
-    <FormItem :label="item.title" :prop="item.key">
+    <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="item.meta.disabled"></Input>
+    <Switch size="large" v-model="data[item.key]" v-else-if="item.meta.type === 'switch'"
+            :disabled="item.meta.disabled">
+      <span slot="open">{{item.meta.option.openText}}</span>
+      <span slot="close">{{item.meta.option.closeText}}</span>
+    </Switch>
+    <CheckboxGroup v-model="data[item.key]" v-else-if="item.meta.type === 'checkbox'">
+      <Checkbox v-for="opt in item.meta.optionList" :disabled="item.meta.disabled"
+                :label="opt.value"
+                :key="opt.value">{{opt.label}}
+      </Checkbox>
+    </CheckboxGroup>
+    <DatePicker v-else-if="item.meta.type === 'date'" :disabled="item.meta.disabled"
+                v-model="data[item.key]"
+                :value.sync="data[item.key]" format="yyyy年MM月dd日" type="date" placeholder="选择日期"
+                style="width: 200px"></DatePicker>
+    <image-item v-else-if="item.meta.type === 'image'"
+                v-model="data[item.key]"
+                :disabled="item.meta.disabled"
+                :multiple="item.meta.multiple"></image-item>
 
-      <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="item.meta.disabled"></Input>
-      <Switch  size="large" v-model="data[item.key]" v-else-if="item.meta.type === 'switch'" :disabled="item.meta.disabled">
-        <span slot="open">{{item.meta.option.openText}}</span>
-        <span slot="close">{{item.meta.option.closeText}}</span>
-      </Switch>
-      <CheckboxGroup v-model="data[item.key]" v-else-if="item.meta.type === 'checkbox'" >
-        <Checkbox v-for="opt in item.meta.optionList" :disabled="item.meta.disabled"
-                  :label="opt.value"
-                  :key="opt.value">{{opt.label}}
-        </Checkbox>
-      </CheckboxGroup>
-      <DatePicker  v-else-if="item.meta.type === 'date'" :disabled="item.meta.disabled"
-                   v-model="data[item.key]"
-                   :value.sync="data[item.key]" format="yyyy年MM月dd日" type="date" placeholder="选择日期"
-                  style="width: 200px"></DatePicker>
-      <image-item  v-else-if="item.meta.type === 'image'"  v-model="data[item.key]" :isSingleFile="true" ></image-item>
+  </FormItem>
 
-    </FormItem>
-    <!--<FormItem :label="label" :prop="prop">-->
-
-    <!--<Input v-model="value" v-if="type === 'input'"></Input>-->
-
-    <!--</FormItem>-->
-
-  </div>
 
 </template>
 

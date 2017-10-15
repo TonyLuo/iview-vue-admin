@@ -2,7 +2,6 @@
   import baseView from '../../components/base/baseView.vue'
   import userApi from '../../api/user.api'
   import {formatDate} from '../../libs/util'
-  import imageItem from '../../components/form-type/image.vue'
 
   const statusList = [{label: '有效', value: 1, color: 'blue'}, {label: '失效', value: 0, color: 'yellow'}]
   const authorityList = [
@@ -19,8 +18,6 @@
 
   export default {
     name: 'userList',
-    components: {imageItem},
-
     extends: baseView,
     data() {
       return {
@@ -47,34 +44,23 @@
         },
         fields: [
 
-
-          {
-            width: 150,
-            title: '帐号',
-            key: 'login',
-            meta: {
-              'hidden': true,
-              type: 'input',
-              rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
-            }
-          },
-
           {
             width: 150,
             title: '头像',
             key: 'imageUrl',
             meta: {
-              'hidden': true,
+              hidden: false,
+              multiple: false,
               type: 'image',
             },
             render: (h, params) => {
               const row = params.row
-
               return h('image-item', {
                 props: {
                   value: row.imageUrl,
-                  isSingleFile: true,
-                  disabled: true
+                  multiple: false,
+                  disabled: true,
+                  size: 40
                 }
               })
 
@@ -82,10 +68,22 @@
           },
           {
             width: 150,
+            title: '帐号',
+            key: 'login',
+            meta: {
+              type: 'input',
+              rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
+            }
+          },
+
+
+          {
+            width: 150,
             title: '姓氏',
             key: 'firstName',
             sortable: 'custom',
             meta: {
+              hidden: true,
               type: 'input',
             }
           },
@@ -192,6 +190,7 @@
               return h('div', formatDate(params.row.lastModifiedDate))
             },
             meta: {
+              hidden: true,
               disabled: true,
               type: 'date',
             }

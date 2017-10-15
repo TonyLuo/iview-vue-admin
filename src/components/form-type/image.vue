@@ -1,12 +1,11 @@
 <template>
   <span>
-    <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
+    <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index"
+         :style="{width: (size -2) + 'px', height:(size -2) + 'px','line-height': (size -2) + 'px'}">
       <template v-if="item.status === 'finished'">
         <img :src="item.url">
         <div class="demo-upload-list-cover" @click="handleView(item)">
           <Icon type="ios-close" @click.native="handleRemove(item,$event)" class="remove-btn" v-if="!disabled"></Icon>
-          <!--<Icon type="ios-eye-outline" ></Icon>-->
-
         </div>
       </template>
       <template v-else>
@@ -24,17 +23,16 @@
       :on-exceeded-size="handleMaxSize"
       :before-upload="handleBeforeUpload"
       :on-progress="onProgress"
-      multiple
+      :multiple="multiple"
       type="drag"
       :action="action"
       :data="uploadParams"
-      style="display: inline-block;width:58px;">
-      <div style="width: 58px;height:58px;line-height: 58px;">
+      v-bind:style="{ display: 'inline-block', width:(size -2) + 'px;' }">
+      <div :style="{width: (size -2) + 'px', height:(size -2) + 'px','line-height': (size -2) + 'px'}">
         <Icon type="camera" size="20"></Icon>
       </div>
     </Upload>
     <Modal title="查看图片" v-model="visible">
-      <!--<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">-->
       <img :src="fileUrl" v-if="visible" style="width: 100%">
     </Modal>
   </span>
@@ -48,8 +46,9 @@
       value: {
         type: [Array, String]
       },
-      isSingleFile: {type: Boolean, default: false},
-      disabled: {type: Boolean, default: false}
+      multiple: {type: Boolean, default: false},
+      disabled: {type: Boolean, default: false},
+      size: {type: Number, default: 60}
     },
     data() {
       return {
@@ -66,7 +65,7 @@
     methods: {
       init() {
         this.uploadList = []
-        if (this.isSingleFile) {
+        if (!this.multiple) {
           if (this.value && this.value !== '') {
             let file = {status: 'finished', 'url': this.value}
             this.uploadList =[file]
@@ -85,7 +84,7 @@
       handleFileChange(file) {
         this.uploadList = this.$refs.upload.fileList
 
-        if (this.isSingleFile) {
+        if (!this.multiple) {
           if (this.$refs.upload.fileList && this.$refs.upload.fileList.length > 0) {
             this.$emit('input', file.url)
 
