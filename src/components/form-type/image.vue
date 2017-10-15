@@ -14,26 +14,30 @@
     </div>
 
     <Upload v-if="!disabled"
-      ref="upload"
-      :show-upload-list="false"
-      :on-success="handleSuccess"
-      :format="['jpg','jpeg','png']"
-      :max-size="2048"
-      :on-format-error="handleFormatError"
-      :on-exceeded-size="handleMaxSize"
-      :before-upload="handleBeforeUpload"
-      :on-progress="onProgress"
-      :multiple="multiple"
-      type="drag"
-      :action="action"
-      :data="uploadParams"
-      v-bind:style="{ display: 'inline-block', width:(size -2) + 'px;' }">
+            ref="upload"
+            :show-upload-list="false"
+            :on-success="handleSuccess"
+            :format="['jpg','jpeg','png']"
+            :max-size="2048"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            :on-progress="onProgress"
+            :multiple="multiple"
+            type="drag"
+            :action="action"
+            :data="uploadParams"
+            v-bind:style="{ display: 'inline-block', width:(size -2) + 'px;' }">
       <div :style="{width: (size -2) + 'px', height:(size -2) + 'px','line-height': (size -2) + 'px'}">
         <Icon type="camera" size="20"></Icon>
       </div>
     </Upload>
-    <Modal title="查看图片" v-model="visible">
-      <img :src="fileUrl" v-if="visible" style="width: 100%">
+    <Modal v-model="visible" id="image-preview-modal">
+      <img :src="fileUrl" v-if="visible" style="width: 100%;height: 100%">
+      <span slot="footer"></span>
+      <span slot="close">
+        <Icon type="ios-close" size="30" color="white"></Icon>
+      </span>
     </Modal>
   </span>
 </template>
@@ -41,7 +45,7 @@
   import qiniu from '../../libs/qiniu'
 
   export default {
-    name:'imageItem',
+    name: 'imageItem',
     props: {
       value: {
         type: [Array, String]
@@ -68,12 +72,11 @@
         if (!this.multiple) {
           if (this.value && this.value !== '') {
             let file = {status: 'finished', 'url': this.value}
-            this.uploadList =[file]
+            this.uploadList = [file]
           }
 
         } else {
-          if (this.value && (typeof this.value === 'Array'))
-          {
+          if (this.value && (typeof this.value === 'Array')) {
             this.uploadList = this.value.map(item => {
               item.status = 'finished';
               return item
@@ -103,7 +106,7 @@
         this.fileUrl = file.url
         this.visible = true;
       },
-      onProgress(event, file, fileList){
+      onProgress(event, file, fileList) {
         this.uploadList = fileList
 
       },
@@ -171,7 +174,29 @@
     }
   }
 </script>
-<style>
+
+<style rel="stylesheet/less" type="text/css" lang="less">
+  #image-preview-modal {
+
+  .ivu-modal-body {
+    height: 520px;
+    padding: 0px !important;
+  }
+
+  .ivu-modal-footer {
+    display: none;
+  }
+
+  .ivu-modal-close {
+    top: -22px !important;
+    right: -22px !important;
+    position: absolute;
+    opacity: 0.6;
+
+  }
+
+  }
+
   .demo-upload-list {
     display: inline-block;
     width: 60px;
