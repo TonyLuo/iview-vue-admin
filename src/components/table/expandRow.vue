@@ -25,10 +25,11 @@
 </template>
 <script>
   import Cell from 'iview/src/components/table/cell.vue';
+  import imageItem from '../../components/form-type/image.vue'
 
   export default {
     name: 'expandRow',
-    components: {Cell},
+    components: {Cell,imageItem},
 
     props: {
       fields: Array,

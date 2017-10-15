@@ -2,6 +2,7 @@
   import baseView from '../../components/base/baseView.vue'
   import userApi from '../../api/user.api'
   import {formatDate} from '../../libs/util'
+  import imageItem from '../../components/form-type/image.vue'
 
   const statusList = [{label: '有效', value: 1, color: 'blue'}, {label: '失效', value: 0, color: 'yellow'}]
   const authorityList = [
@@ -17,7 +18,9 @@
     }]
 
   export default {
-    name: 'newUserList',
+    name: 'userList',
+    components: {imageItem},
+
     extends: baseView,
     data() {
       return {
@@ -44,6 +47,7 @@
         },
         fields: [
 
+
           {
             width: 150,
             title: '帐号',
@@ -52,6 +56,28 @@
               'hidden': true,
               type: 'input',
               rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
+            }
+          },
+
+          {
+            width: 150,
+            title: '头像',
+            key: 'imageUrl',
+            meta: {
+              'hidden': true,
+              type: 'image',
+            },
+            render: (h, params) => {
+              const row = params.row
+
+              return h('image-item', {
+                props: {
+                  value: row.imageUrl,
+                  isSingleFile: true,
+                  disabled: true
+                }
+              })
+
             }
           },
           {
@@ -124,17 +150,17 @@
               return h('span',
                 [
                   authorities.map(item => {
-                   let auth = authorityList.filter(authority =>{
+                    let auth = authorityList.filter(authority => {
                       return authority.value === item
                     })[0]
-                    if(auth){
+                    if (auth) {
                       return h('Tag', {
                         props: {
                           type: 'dot',
                           color: auth.color
                         }
                       }, auth.label)
-                    }else{
+                    } else {
                       return h('span')
                     }
 

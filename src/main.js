@@ -11,9 +11,12 @@ import store from './store'
 import util from './libs/util'
 import { routers } from './router'
 
+import formType from './components/form-type'
+
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(iView)
+Vue.use(formType)
 
 Vue.config.productionTip = false
 

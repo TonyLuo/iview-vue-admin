@@ -2,7 +2,7 @@
 
   <Form :model="profileForm" :rules="profileRules" ref="profileForm" class="ruleForm" :label-width="80">
     <FormItem label="头像">
-      <image-item v-model="profileForm.imageUrl" :isSingleFile="true"></image-item>
+      <image-item v-model="profileForm.imageUrl" :isSingleFile="true" ></image-item>
     </FormItem>
     <FormItem label="姓氏" prop="firstName">
       <Input v-model="profileForm.firstName"></Input>
@@ -30,10 +30,8 @@
 <script>
   import {mapGetters} from 'vuex'
   import userApi from '../../api/user.api'
-  import imageItem from '../../components/form-type/image.vue'
 
   export default {
-    components: {imageItem},
     data() {
       let validatePass = (rule, value, callback) => {
 

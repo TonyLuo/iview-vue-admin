@@ -19,6 +19,8 @@
                    v-model="data[item.key]"
                    :value.sync="data[item.key]" format="yyyy年MM月dd日" type="date" placeholder="选择日期"
                   style="width: 200px"></DatePicker>
+      <image-item  v-else-if="item.meta.type === 'image'"  v-model="data[item.key]" :isSingleFile="true" ></image-item>
+
     </FormItem>
     <!--<FormItem :label="label" :prop="prop">-->
 

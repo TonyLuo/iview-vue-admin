@@ -4,7 +4,7 @@
       <template v-if="item.status === 'finished'">
         <img :src="item.url">
         <div class="demo-upload-list-cover" @click="handleView(item)">
-          <Icon type="ios-close" @click.native="handleRemove(item,$event)" class="remove-btn"></Icon>
+          <Icon type="ios-close" @click.native="handleRemove(item,$event)" class="remove-btn" v-if="!disabled"></Icon>
           <!--<Icon type="ios-eye-outline" ></Icon>-->
 
         </div>
@@ -14,7 +14,7 @@
       </template>
     </div>
 
-    <Upload
+    <Upload v-if="!disabled"
       ref="upload"
       :show-upload-list="false"
       :on-success="handleSuccess"
@@ -43,11 +43,13 @@
   import qiniu from '../../libs/qiniu'
 
   export default {
+    name:'imageItem',
     props: {
       value: {
         type: [Array, String]
       },
-      isSingleFile: {type: Boolean, default: false}
+      isSingleFile: {type: Boolean, default: false},
+      disabled: {type: Boolean, default: false}
     },
     data() {
       return {
@@ -63,6 +65,7 @@
     computed: {},
     methods: {
       init() {
+        this.uploadList = []
         if (this.isSingleFile) {
           if (this.value && this.value !== '') {
             let file = {status: 'finished', 'url': this.value}
@@ -165,6 +168,7 @@
     },
 
     mounted() {
+      this.init()
     }
   }
 </script>
