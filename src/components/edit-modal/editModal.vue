@@ -2,6 +2,7 @@
 
   <Modal
     v-model="dialogVisible"
+    :scrollable="true"
     :title="title"
     @on-ok="ok"
     @on-cancel="cancel">
