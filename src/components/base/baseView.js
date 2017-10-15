@@ -213,6 +213,7 @@ export default {
     onDelete(row) {
       let msg = row.name || row.id
 
+
       this.$Modal.confirm({
         title: '是否删除记录？',
         render: (h) => {

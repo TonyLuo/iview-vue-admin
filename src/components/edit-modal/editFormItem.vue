@@ -1,6 +1,6 @@
 <template>
 
-  <FormItem :label="item.title" :prop="item.key">
+  <FormItem :label="item.title" :prop="item.key" :rules="item.meta.rules">
 
     <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="item.meta.disabled"></Input>
     <Switch size="large" v-model="data[item.key]" v-else-if="item.meta.type === 'switch'"

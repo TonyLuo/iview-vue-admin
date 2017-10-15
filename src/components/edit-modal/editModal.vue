@@ -5,7 +5,7 @@
     :title="title"
     @on-ok="ok"
     @on-cancel="cancel">
-    <Form :model="editForm" ref="editForm" class="ruleForm" :label-width="labelWidth">
+    <Form :model="data" ref="editForm" class="ruleForm" :label-width="labelWidth">
       <span v-for="item in  fields" :key="item.key">
         <edit-form-item v-if="item.meta && item.meta.type && item.meta.type !== 'custom' "
                         :data="data"
@@ -15,7 +15,12 @@
         <slot :name="item.key" v-else></slot>
 
       </span>
+
     </Form>
+    <div slot="footer">
+      <Button @click="dialogVisible = false">{{cancelText}}</Button>
+      <Button type="primary" @click="ok()">{{okText}}</Button>
+    </div>
   </Modal>
 
 </template>
@@ -44,7 +49,6 @@
 
     data() {
       return {
-        editForm: {},
         imageList: [],
         imageListChange: false,
         pressOKBtn: false,
