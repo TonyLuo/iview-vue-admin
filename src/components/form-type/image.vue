@@ -13,16 +13,17 @@
         <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
       </template>
     </div>
+
     <Upload
       ref="upload"
       :show-upload-list="false"
-      :default-file-list="defaultList"
       :on-success="handleSuccess"
       :format="['jpg','jpeg','png']"
       :max-size="2048"
       :on-format-error="handleFormatError"
       :on-exceeded-size="handleMaxSize"
       :before-upload="handleBeforeUpload"
+      :on-progress="onProgress"
       multiple
       type="drag"
       :action="action"
@@ -54,82 +55,70 @@
         action: 'https://upload-z2.qbox.me',
         uploadParams: {token: ''},
         uploadDomainName: 'http://ov8e12r3a.bkt.clouddn.com/',
-//        defaultList: [
-////          {
-////            'name': 'a42bdcc1178e62b4694c830f028db5c0',
-////            'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-////          },
-////          {
-////            'name': 'bc7521e033abdd1e92222d733590f104',
-////            'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-////          }
-//        ],
         fileUrl: '',
         visible: false,
-        uploadList: []
+        uploadList: [],
       }
     },
-    computed: {
-      defaultList() {
-//        return this.value
-
-        if (this.isSingleFile) {
-          let list = []
-          let file = {}
-          this.$set(file, 'url', this.value)
-          list.push(file)
-          return list
-
-        } else {
-          return this.value
-        }
-      }
-    },
+    computed: {},
     methods: {
       init() {
         if (this.isSingleFile) {
-          if (this.value) {
+          if (this.value && this.value !== '') {
+            let file = {status: 'finished', 'url': this.value}
+            this.uploadList =[file]
+          }
 
-//            this.defaultList.push({url: this.value})
-            this.$refs.upload.fileList.push({
-              'name': 'a42bdcc1178e62b4694c830f028db5c0',
-              'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+        } else {
+          if (this.value && (typeof this.value === 'Array'))
+          {
+            this.uploadList = this.value.map(item => {
+              item.status = 'finished';
+              return item
             })
           }
-        } else {
-          this.defaultList = this.value
         }
       },
-      handleFileChange() {
-        if (this.isSingleFile) {
+      handleFileChange(file) {
+        this.uploadList = this.$refs.upload.fileList
 
-          this.$emit('input', this.$refs.upload.fileList[0] ? this.$refs.upload.fileList[0].url : null)
+        if (this.isSingleFile) {
+          if (this.$refs.upload.fileList && this.$refs.upload.fileList.length > 0) {
+            this.$emit('input', file.url)
+
+          } else {
+            this.$emit('input', null)
+
+          }
 
         } else {
           this.$emit('input', this.$refs.upload.fileList)
 
         }
+
       },
       handleView(file) {
         this.fileUrl = file.url
         this.visible = true;
+      },
+      onProgress(event, file, fileList){
+        this.uploadList = fileList
+
       },
       handleRemove(file, $event) {
         $event.stopPropagation()
         // 从 upload 实例删除数据
         const fileList = this.$refs.upload.fileList;
         this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-        this.handleFileChange()
+        this.handleFileChange(file)
       },
       handleSuccess(res, file) {
         const url = this.uploadDomainName + res.key
         file.url = url
         file.key = res.key
         file.name = res.key
-        this.handleFileChange()
-        // 因为上传过程为实例，这里模拟添加 url
-//        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-//        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+        this.handleFileChange(file)
+
       },
       handleFormatError(file) {
         this.$Notice.warning({
@@ -171,15 +160,11 @@
     },
     watch: {
       value() {
-//        this.init()
+        this.init()
       }
     },
 
     mounted() {
-//      this.init()
-      console.log(this.value)
-      this.uploadList = this.$refs.upload.fileList;
-//      this.uploadList = this.defaultList;
     }
   }
 </script>

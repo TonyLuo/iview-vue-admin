@@ -19,7 +19,7 @@
 
     <FormItem>
       <Button type="primary" @click="submitForm('profileForm')">提交</Button>
-      <Button type="ghost" @click="handleReset('profileForm')" style="margin-left: 8px">重置</Button>
+      <!--<Button type="ghost" @click="handleReset('profileForm')" style="margin-left: 8px">重置</Button>-->
     </FormItem>
 
   </Form>
@@ -77,15 +77,6 @@
     },
     watch: {
       userInfo() {
-//        console.log(this.userInfo)
-
-//        this.$set(this.profileForm, 'id', this.userInfo.id)
-//        this.$set(this.profileForm, 'login', this.userInfo.login)
-//        this.$set(this.profileForm, 'authorities', this.userInfo.authorities)
-//        this.$set(this.profileForm, 'firstName', this.userInfo.firstName)
-//        this.$set(this.profileForm, 'lastName', this.userInfo.lastName)
-//        this.$set(this.profileForm, 'activated', this.userInfo.activated)
-//        this.$set(this.profileForm, 'imageUrl', this.userInfo.imageUrl)
         this.profileForm = Object.assign({}, this.userInfo)
       }
     },
