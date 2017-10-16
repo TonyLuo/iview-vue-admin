@@ -126,6 +126,7 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
+              this.$set(this.queryOptions, "page", 1) // ****important***  reset the page to first page when click filter button
               this.searchByStatus(value[0])
             },
             meta: {
