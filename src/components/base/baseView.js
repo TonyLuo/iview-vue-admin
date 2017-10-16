@@ -10,8 +10,10 @@ export default {
   data() {
     return {
       //TODO override api, operations, fields, searchOptions in child page
-      expandColNum: 2,
       showSelection: false,
+      showExpand: true,
+      showOperation: true,
+      expandColNum: 2,
 
       api: null,
       fields: null,
@@ -95,20 +97,17 @@ export default {
   computed: {
     //dynamic generate the table columns based on the user role
     tableColumns: function () {
-      this.fields = this.fields.filter(item => {
-        return checkPermission(item)
-      })
-      let selectionColumn = []
+
+      let preColumns = []
       if (this.showSelection) {
-        selectionColumn = [{
+        preColumns.push({
           type: 'selection',
           width: 60,
           align: 'center'
-        }]
+        })
       }
-      let columns = [
-        ...selectionColumn,
-        {
+      if (this.showExpand) {
+        preColumns.push({
           type: 'expand',
           width: 30,
           render: (h, params) => {
@@ -120,21 +119,32 @@ export default {
               }
             })
           }
-        },
-        {
-          title: '操作',
-          key: 'action',
-          width: this.operations.width,
-          align: 'center',
-          render: (h, params) => {
-            return h(operation, {
-              props: {
-                row: params.row,
-                options: this.operations
-              }
-            })
+        })
+      }
+      if (this.showOperation) {
+        preColumns.push(
+          {
+            title: '操作',
+            key: 'action',
+            width: this.operations.width,
+            align: 'center',
+            render: (h, params) => {
+              return h(operation, {
+                props: {
+                  row: params.row,
+                  options: this.operations
+                }
+              })
+            }
           }
-        },
+        )
+      }
+
+      this.fields = this.fields.filter(item => {
+        return checkPermission(item)
+      })
+      let columns = [
+        ...preColumns,
         ...this.fields.filter(item => {
           return !(item.meta && item.meta.hidden)
         })

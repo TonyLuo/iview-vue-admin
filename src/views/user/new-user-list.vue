@@ -5,7 +5,8 @@
     <search-criteria :search-options="searchOptions" @clear="onRefresh()" @search-btn-click="onSearchBtnClick">
       <div slot="simple-search-btn-append">
         <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
-        <Button type="ghost" icon="minus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
+        <Button type="ghost" icon="minus" style="margin-left: 5px;float: left" @click="onDeleteAll"
+                v-if="multipleSelection && multipleSelection.length > 0"></Button>
       </div>
     </search-criteria>
     <div>
@@ -66,6 +67,9 @@
     data() {
       return {
         showSelection: true,
+        showExpand: true,
+        showOperation: false,
+        expandColNum: 2,
         api: userApi,
         operations: {
           width: 80,
@@ -320,6 +324,9 @@
     },
     computed: {},
     methods: {
+      onDeleteAll(){
+        console.log(this.multipleSelection)
+      },
       onSelectAll(selection) {
         console.log('onSelectAll ====')
 

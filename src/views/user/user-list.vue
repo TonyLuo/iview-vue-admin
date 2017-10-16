@@ -22,6 +22,8 @@
     data() {
       return {
         showSelection: false,
+        showExpand: true,
+        showOperation: true,
         expandColNum: 3,
         api: userApi,
         operations: {
