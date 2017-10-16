@@ -2,7 +2,7 @@
 
   <FormItem :label="item.title" :prop="item.key" :rules="item.meta.rules">
 
-    <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="checkDisabled(item)"></Input>
+    <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="checkDisabled(item,data)"></Input>
     <Switch size="large" v-model="data[item.key]" v-else-if="item.meta.type === 'switch'"
             :disabled="checkDisabled(item)">
       <span slot="open">{{item.meta.option.openText}}</span>
@@ -51,14 +51,12 @@
 
     },
 
-    computed: {
-
-    },
+    computed: {},
     methods: {
-      checkDisabled(item){
-        if(typeof item.meta.disabled === 'function'){
-          return item.meta.disabled.call()
-        }else{
+      checkDisabled(item, data) {
+        if (typeof item.meta.disabled === 'function') {
+          return item.meta.disabled.call(this, item, data)
+        } else {
           return item.meta.disabled
         }
       },

@@ -87,7 +87,8 @@
             key: 'login',
             meta: {
               type: 'input',
-              disabled: function(){
+              disabled: function (item, data) {
+//                console.log(item,data)
                 return self.editModalStatus === 'update'
               },
               rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
@@ -232,7 +233,7 @@
               auth: ['ROLE_ADMIN'],
               type: 'warning',
               iconName: 'close',
-              hideCondition:function(){
+              hideCondition: function () {
                 return !self.multipleSelection || self.multipleSelection.length === 0
               },
               operation: this.onDeleteSelection
