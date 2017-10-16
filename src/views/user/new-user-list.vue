@@ -7,9 +7,18 @@
         <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
       </div>
       <div slot="search-btn-append" style="float: left">
+
         <Button type="warning" icon="close" style="margin-left: 5px;float: left" @click="onDeleteSelection"
                 v-if="multipleSelection && multipleSelection.length > 0">删除
         </Button>
+
+        <span v-for="btn in searchOptions.buttonList" :key="btn.name">
+          <Button style="margin-left: 5px;float: left"
+                  :type="btn.type" :icon="btn.meta.iconName" @click="btn.meta.operation"
+                  v-if="checkPermission(btn)" > {{btn.name}}
+        </Button>
+        </span>
+
       </div>
     </search-criteria>
     <div>
@@ -52,8 +61,8 @@
         <p>是否继续删除？</p>
       </div>
       <div slot="footer">
-        <Button type="ghost"  @click="deleteConfirmModal = !deleteConfirmModal">取消</Button>
-        <Button type="error"  :loading="deleteConfirmModalLoading" @click="del">删除</Button>
+        <Button type="ghost" @click="deleteConfirmModal = !deleteConfirmModal">取消</Button>
+        <Button type="error" :loading="deleteConfirmModalLoading" @click="del">删除</Button>
       </div>
     </Modal>
 
@@ -63,7 +72,7 @@
 <script>
   import baseView from '../../components/base/baseView.js'
   import userApi from '../../api/user.api'
-  import {formatDate} from '../../libs/util'
+  import {checkPermission, formatDate} from '../../libs/util'
 
   const statusList = [{label: '有效', value: 1, color: 'blue'}, {label: '失效', value: 0, color: 'yellow'}]
   const authorityList = [
@@ -276,6 +285,26 @@
           }
         ],
         searchOptions: {
+          buttonList: [
+            {
+              name: '创建',
+              meta: {
+                auth: ['ROLE_ADMIN'],
+                type: 'ghost',
+                iconName: 'plus',
+                operation: this.onCreate
+              }
+            },
+            {
+              name: '删除',
+              meta: {
+                auth: ['ROLE_ADMIN'],
+                type: 'ghost',
+                iconName: 'close',
+                operation: this.onDeleteSelection
+              }
+            },
+          ],
           simpleSearchOptions: [{
             name: '状态',
             meta: {
@@ -343,6 +372,9 @@
     },
     computed: {},
     methods: {
+      checkPermission(item){
+        return checkPermission(item)
+      },
       onDeleteSelection() {
         this.deleteConfirmModal = true
         console.log(this.multipleSelection)

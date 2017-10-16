@@ -17,6 +17,24 @@ export default {
 
       api: null,
       fields: null,
+      buttonList: [
+        {
+          name: '创建',
+          meta: {
+            type: 'ghost',
+            iconName: 'plus',
+            operation: this.onCreate
+          }
+        },
+        {
+          name: '删除',
+          meta: {
+            type: 'warning',
+            iconName: 'close',
+            operation: this.onDeleteSelection
+          }
+        },
+      ],
       operations: {
         width: 80,
         list: [
@@ -38,6 +56,7 @@ export default {
 
       },
       searchOptions: {
+
         simpleSearchOptions: [
           {
             name: 'ID',
@@ -91,8 +110,7 @@ export default {
       editForm: {},
       showEditModal: false,
 
-      deleteOperation: function () {
-      },
+      deleteOperation: null,
       deleteData: null,
       deleteConfirmModal: false,
       deleteConfirmModalLoading: false,
@@ -159,6 +177,10 @@ export default {
   },
   methods: {
 
+    checkPermit(btn) {
+
+      return checkPermission(btn)
+    },
     checkInitialization() {
       warn(this.api === null, '[baseView] api is not initialized properly')
       warn(this.fields === null, '[baseView] fields is not initialized properly')
@@ -173,6 +195,7 @@ export default {
     },
 
     onPageSizeChange(size) {
+      this.queryOptions.page = 1
       this.queryOptions.size = size
       this.fetchData()
     },
@@ -249,9 +272,12 @@ export default {
 
     },
     onDeleteSelection() {
-      this.deleteConfirmModal = true
-      this.deleteOperation = this.deleteSelection
-      this.deleteData = this.multipleSelection
+      if (this.multipleSelection && this.multipleSelection.length > 0) {
+        this.deleteConfirmModal = true
+        this.deleteOperation = this.deleteSelection
+        this.deleteData = this.multipleSelection
+      }
+
 
     },
 
@@ -377,7 +403,7 @@ export default {
         return this.api.deleteRecordList(selection)
 
       } else {
-       return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           resolve(true)
         })
       }

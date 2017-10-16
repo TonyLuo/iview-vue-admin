@@ -3,13 +3,19 @@
   <div>
 
     <search-criteria :search-options="searchOptions" @clear="onRefresh()" @search-btn-click="onSearchBtnClick">
-      <div slot="simple-search-btn-append" style="float: left">
-        <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
-      </div>
+      <!--<div slot="simple-search-btn-append" style="float: left">-->
+        <!--<Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>-->
+      <!--</div>-->
       <div slot="search-btn-append" style="float: left">
-        <Button type="warning" icon="close" style="margin-left: 5px;float: left" @click="onDeleteSelection"
-                v-if="multipleSelection && multipleSelection.length > 0">删除
+        <!--<Button type="warning" icon="close" style="margin-left: 5px;float: left" @click="onDeleteSelection"-->
+                <!--v-if="multipleSelection && multipleSelection.length > 0">删除-->
+        <!--</Button>-->
+        <span v-for="btn in buttonList" :key="btn.name" style="margin-left: 5px;float: left">
+          <Button
+                  :type="btn.meta.type" :icon="btn.meta.iconName" @click="btn.meta.operation"
+                  v-if="checkPermit(btn)"> {{btn.name}}
         </Button>
+        </span>
       </div>
     </search-criteria>
     <div>

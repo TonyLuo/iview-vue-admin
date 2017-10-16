@@ -212,7 +212,28 @@
             }
           }
         ],
+        buttonList: [
+          {
+            name: '创建',
+            meta: {
+              auth: ['ROLE_USER'],
+              type: 'ghost',
+              iconName: 'plus',
+              operation: this.onCreate
+            }
+          },
+          {
+            name: '删除',
+            meta: {
+              auth: ['ROLE_ADMIN'],
+              type: 'warning',
+              iconName: 'close',
+              operation: this.onDeleteSelection
+            }
+          },
+        ],
         searchOptions: {
+
           simpleSearchOptions: [{
             name: '状态',
             meta: {
