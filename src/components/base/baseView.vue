@@ -12,7 +12,10 @@
         <!--</Button>-->
         <span v-for="btn in buttonList" :key="btn.name" style="margin-left: 5px;float: left">
           <Button
-                  :type="btn.meta.type" :icon="btn.meta.iconName" @click="btn.meta.operation"
+                  :type="btn.meta.type"
+                  :icon="btn.meta.iconName"
+                  @click="btn.meta.operation"
+                  v-show="!checkHideCondition(btn)"
                   v-if="checkPermit(btn)"> {{btn.name}}
         </Button>
         </span>

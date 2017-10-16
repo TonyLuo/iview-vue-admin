@@ -177,8 +177,15 @@ export default {
   },
   methods: {
 
-    checkPermit(btn) {
+    checkHideCondition(btn){
+      if(typeof btn.meta.hideCondition === 'function'){
 
+        return btn.meta.hideCondition.call()
+      }else{
+        return btn.meta.hideCondition
+      }
+    },
+    checkPermit(btn) {
       return checkPermission(btn)
     },
     checkInitialization() {

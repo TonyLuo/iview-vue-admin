@@ -20,8 +20,9 @@
     name: 'userList',
     extends: baseView,
     data() {
+      let self = this
       return {
-        showSelection: false,
+        showSelection: true,
         showExpand: true,
         showOperation: true,
         expandColNum: 3,
@@ -86,6 +87,9 @@
             key: 'login',
             meta: {
               type: 'input',
+              disabled: function(){
+                return self.editModalStatus === 'update'
+              },
               rules: [{required: true, message: '帐号不能为空', trigger: 'blur'}]
             }
           },
@@ -222,15 +226,18 @@
               operation: this.onCreate
             }
           },
-//          {
-//            name: '删除',
-//            meta: {
-//              auth: ['ROLE_ADMIN'],
-//              type: 'warning',
-//              iconName: 'close',
-//              operation: this.onDeleteSelection
-//            }
-//          },
+          {
+            name: '删除',
+            meta: {
+              auth: ['ROLE_ADMIN'],
+              type: 'warning',
+              iconName: 'close',
+              hideCondition:function(){
+                return !self.multipleSelection || self.multipleSelection.length === 0
+              },
+              operation: this.onDeleteSelection
+            }
+          },
         ],
         searchOptions: {
 

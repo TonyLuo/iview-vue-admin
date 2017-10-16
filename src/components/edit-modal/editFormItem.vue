@@ -2,25 +2,25 @@
 
   <FormItem :label="item.title" :prop="item.key" :rules="item.meta.rules">
 
-    <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="item.meta.disabled"></Input>
+    <Input v-model="data[item.key]" v-if="item.meta.type === 'input'" :disabled="checkDisabled(item)"></Input>
     <Switch size="large" v-model="data[item.key]" v-else-if="item.meta.type === 'switch'"
-            :disabled="item.meta.disabled">
+            :disabled="checkDisabled(item)">
       <span slot="open">{{item.meta.option.openText}}</span>
       <span slot="close">{{item.meta.option.closeText}}</span>
     </Switch>
     <CheckboxGroup v-model="data[item.key]" v-else-if="item.meta.type === 'checkbox'">
-      <Checkbox v-for="opt in item.meta.optionList" :disabled="item.meta.disabled"
+      <Checkbox v-for="opt in item.meta.optionList" :disabled="checkDisabled(item)"
                 :label="opt.value"
                 :key="opt.value">{{opt.label}}
       </Checkbox>
     </CheckboxGroup>
-    <DatePicker v-else-if="item.meta.type === 'date'" :disabled="item.meta.disabled"
+    <DatePicker v-else-if="item.meta.type === 'date'" :disabled="checkDisabled(item)"
                 v-model="data[item.key]"
                 :value.sync="data[item.key]" format="yyyy年MM月dd日" type="date" placeholder="选择日期"
                 style="width: 200px"></DatePicker>
     <image-item v-else-if="item.meta.type === 'image'"
                 v-model="data[item.key]"
-                :disabled="item.meta.disabled"
+                :disabled="checkDisabled(item)"
                 :multiple="item.meta.multiple"></image-item>
 
   </FormItem>
@@ -51,8 +51,17 @@
 
     },
 
-    computed: {},
+    computed: {
+
+    },
     methods: {
+      checkDisabled(item){
+        if(typeof item.meta.disabled === 'function'){
+          return item.meta.disabled.call()
+        }else{
+          return item.meta.disabled
+        }
+      },
       showMessage(item) {
         let showMsg = item.meta.showMessage;
         if (showMsg === undefined || showMsg === null) return true; //默认显示校验消息
