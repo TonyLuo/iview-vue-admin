@@ -21,7 +21,7 @@
     extends: baseView,
     data() {
       return {
-        showSelection: true,
+        showSelection: false,
         showExpand: true,
         showOperation: true,
         expandColNum: 3,
@@ -222,15 +222,15 @@
               operation: this.onCreate
             }
           },
-          {
-            name: '删除',
-            meta: {
-              auth: ['ROLE_ADMIN'],
-              type: 'warning',
-              iconName: 'close',
-              operation: this.onDeleteSelection
-            }
-          },
+//          {
+//            name: '删除',
+//            meta: {
+//              auth: ['ROLE_ADMIN'],
+//              type: 'warning',
+//              iconName: 'close',
+//              operation: this.onDeleteSelection
+//            }
+//          },
         ],
         searchOptions: {
 
