@@ -173,8 +173,9 @@
 
             title: '创建时间',
             key: 'createdDate',
+            sortable: 'custom',
             render: (h, params) => {
-              return h('div', formatDate(params.row.createdDate))
+              return h('span', formatDate(params.row.createdDate))
             },
             meta: {
               disabled: true,
