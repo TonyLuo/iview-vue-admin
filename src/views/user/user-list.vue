@@ -21,6 +21,8 @@
     extends: baseView,
     data() {
       return {
+        showSelection: false,
+        expandColNum: 3,
         api: userApi,
         operations: {
           width: 80,
@@ -207,7 +209,6 @@
             }
           }
         ],
-        expandColNum: 3,
         searchOptions: {
           simpleSearchOptions: [{
             name: '状态',

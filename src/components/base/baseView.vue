@@ -11,7 +11,10 @@
       <Table :data="tableData"
              :loading="loading"
              :columns="tableColumns"
-             @on-sort-change="onSortChange" stripe>
+             @on-sort-change="onSortChange"
+             @on-select-all="onSelectAll"
+             @on-selection-change="onSelectionChange"
+             stripe>
 
         <div slot="footer" style="padding-left:5px">
           <Page :total="total"

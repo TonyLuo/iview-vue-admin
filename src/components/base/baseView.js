@@ -10,9 +10,11 @@ export default {
   data() {
     return {
       //TODO override api, operations, fields, searchOptions in child page
+      expandColNum: 2,
+      showSelection: false,
+
       api: null,
       fields: null,
-      expandColNum: 2,
       operations: {
         width: 80,
         list: [
@@ -67,6 +69,7 @@ export default {
       loading: false,
       tableData: [],
       total: 0,
+      multipleSelection: null,
 
       //query options
       queryOptions: {
@@ -92,10 +95,19 @@ export default {
   computed: {
     //dynamic generate the table columns based on the user role
     tableColumns: function () {
-    this.fields = this.fields.filter(item => {
+      this.fields = this.fields.filter(item => {
         return checkPermission(item)
       })
+      let selectionColumn = []
+      if (this.showSelection) {
+        selectionColumn = [{
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }]
+      }
       let columns = [
+        ...selectionColumn,
         {
           type: 'expand',
           width: 30,
@@ -104,7 +116,7 @@ export default {
               props: {
                 row: params.row,
                 fields: this.fields,
-                colNum:this.expandColNum
+                colNum: this.expandColNum
               }
             })
           }
@@ -138,9 +150,7 @@ export default {
 
     },
     // table operation
-    onSelectionChange(val) {
-      this.multipleSelection = val
-    },
+
 
     onPageChange(page) {
       this.queryOptions.page = page
@@ -161,6 +171,13 @@ export default {
       }
       this.fetchData()
     },
+    onSelectAll(selection) {
+
+    },
+    onSelectionChange(selection) {
+      this.multipleSelection = selection
+    },
+
     // end table operation
 
     handleResponseData(responseDataPromise) {
@@ -252,8 +269,8 @@ export default {
       this.showEditModal = false
     },
     // end editModal operation
-    onSearchBtnClick(){
-      this.$set(this.queryOptions,"page",1) // reset the page to first page which click search button
+    onSearchBtnClick() {
+      this.$set(this.queryOptions, "page", 1) // reset the page to first page which click search button
     },
     searchById(value) {
       console.log('searchById', value)
