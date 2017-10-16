@@ -7,8 +7,9 @@
         <Button type="ghost" icon="plus" style="margin-left: 5px;float: left" @click="onCreate"></Button>
       </div>
       <div slot="search-btn-append" style="float: left">
-        <Button type="warning" icon="close" style="margin-left: 5px;float: left" @click="onDeleteAll"
-                v-if="multipleSelection && multipleSelection.length > 0">删除</Button>
+        <Button type="warning" icon="close" style="margin-left: 5px;float: left" @click="onDeleteSelection"
+                v-if="multipleSelection && multipleSelection.length > 0">删除
+        </Button>
       </div>
     </search-criteria>
     <div>
@@ -41,6 +42,20 @@
 
     </edit-modal>
 
+    <Modal v-model="deleteConfirmModal" width="360">
+      <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="information-circled"></Icon>
+        <span>删除确认</span>
+      </p>
+      <div style="text-align:center">
+        <p>删除后将无法恢复</p>
+        <p>是否继续删除？</p>
+      </div>
+      <div slot="footer">
+        <Button type="ghost"  @click="deleteConfirmModal = !deleteConfirmModal">取消</Button>
+        <Button type="error"  :loading="deleteConfirmModalLoading" @click="del">删除</Button>
+      </div>
+    </Modal>
 
   </div>
 
@@ -68,6 +83,8 @@
     extends: baseView,
     data() {
       return {
+        deleteConfirmModalLoading: false,
+        deleteConfirmModal: false,
         showSelection: true,
         showExpand: true,
         showOperation: false,
@@ -326,8 +343,17 @@
     },
     computed: {},
     methods: {
-      onDeleteAll(){
+      onDeleteSelection() {
+        this.deleteConfirmModal = true
         console.log(this.multipleSelection)
+      },
+      del() {
+        this.deleteConfirmModalLoading = true;
+        setTimeout(() => {
+          this.deleteConfirmModalLoading = false;
+          this.deleteConfirmModal = false;
+          this.$Message.success('删除成功');
+        }, 2000);
       },
       onSelectAll(selection) {
         console.log('onSelectAll ====')

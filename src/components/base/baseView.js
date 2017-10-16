@@ -89,8 +89,13 @@ export default {
         create: '创建'
       },
       editForm: {},
-      showEditModal: false
+      showEditModal: false,
 
+      deleteOperation: function () {
+      },
+      deleteData: null,
+      deleteConfirmModal: false,
+      deleteConfirmModalLoading: false,
 
     }
   },
@@ -223,18 +228,7 @@ export default {
       }
       this.fetchData()
     },
-    onDeleteSelection(selection){
-      this.$Modal.confirm({
-        title: '是否删除记录？',
-        render: (h) => {
-          return h('p', '')
-        },
-        onOk: () => {
-          this.deleteSelection(selection)
 
-        }
-      })
-    },
     // search criteria operation end
 
     // row operation
@@ -249,20 +243,18 @@ export default {
       this.openEditModal()
     },
     onDelete(row) {
-      let msg = row.name || row.id
+      this.deleteConfirmModal = true
+      this.deleteOperation = this.delete
+      this.deleteData = row
 
-
-      this.$Modal.confirm({
-        title: '是否删除记录？',
-        render: (h) => {
-          return h('p', msg)
-        },
-        onOk: () => {
-          this.delete(row)
-
-        }
-      })
     },
+    onDeleteSelection() {
+      this.deleteConfirmModal = true
+      this.deleteOperation = this.deleteSelection
+      this.deleteData = this.multipleSelection
+
+    },
+
     //row operation end
 
     // editModal operation
@@ -343,25 +335,50 @@ export default {
     afterUpdate(data, res) {
     },
 
-    delete(row) {
-      if (this.api) {
-        this.api.delete(row.id
-        ).then((res) => {
+    del(deleteOperation, deleteData) {
+      if (deleteOperation) {
+        this.deleteConfirmModalLoading = true;
+
+        deleteOperation(deleteData).then((res) => {
+
+          this.deleteConfirmModalLoading = false;
+          this.deleteConfirmModal = false;
           this.fetchData()
-          this.afterDelete(row, res)
+          this.afterDelete(deleteData, res)
           this.$Message.info('删除成功')
+
+
+        }).catch(error => {
+          this.deleteConfirmModalLoading = false;
+          this.deleteConfirmModal = false;
+          this.$Message.error('删除失败')
 
         })
       }
+      else {
+        this.deleteConfirmModalLoading = false;
+        this.deleteConfirmModal = false;
+      }
 
     },
-    deleteSelection(selection){
-      if (this.api && this.api.deleteRecordList) {
-        this.api.deleteRecordList(selection).then((res) => {
-          this.fetchData()
-          this.afterDelete(selection, res)
-          this.$Message.info('删除成功')
+    delete(row) {
+      if (this.api && this.api.delete) {
+        return this.api.delete(row.id)
+      } else {
+        return new Promise((resolve, reject) => {
+          resolve(true)
+        })
+      }
 
+
+    },
+    deleteSelection(selection) {
+      if (this.api && this.api.deleteRecordList) {
+        return this.api.deleteRecordList(selection)
+
+      } else {
+       return new Promise((resolve, reject) => {
+          resolve(true)
         })
       }
     },

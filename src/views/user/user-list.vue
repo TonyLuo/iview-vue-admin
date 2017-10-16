@@ -279,6 +279,13 @@
     },
     computed: {},
     methods: {
+      deleteSelection(selection) {
+        let promiseList = []
+        selection.forEach(item => {
+          promiseList.push(userApi.delete(item.id))
+        })
+        return Promise.all(promiseList)
+      },
       searchByStatus(value) {
         if (value === null || value === undefined || value === '') {
           this.refresh()
