@@ -21,7 +21,7 @@
     extends: baseView,
     data() {
       return {
-        showSelection: false,
+        showSelection: true,
         showExpand: true,
         showOperation: true,
         expandColNum: 3,

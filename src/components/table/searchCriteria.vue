@@ -43,7 +43,7 @@
       <slot name="simple-search-btn-append" style="float: left">
       </slot>
     </span>
-    <slot name="advanced-search-btn-append" style="float: left">
+    <slot name="search-btn-append" style="float: left">
     </slot>
     <span style="float:right;padding: 6px"
           class="advanced-search-control"

@@ -223,7 +223,18 @@ export default {
       }
       this.fetchData()
     },
+    onDeleteSelection(selection){
+      this.$Modal.confirm({
+        title: '是否删除记录？',
+        render: (h) => {
+          return h('p', '')
+        },
+        onOk: () => {
+          this.deleteSelection(selection)
 
+        }
+      })
+    },
     // search criteria operation end
 
     // row operation
@@ -343,6 +354,16 @@ export default {
         })
       }
 
+    },
+    deleteSelection(selection){
+      if (this.api && this.api.deleteRecordList) {
+        this.api.deleteRecordList(selection).then((res) => {
+          this.fetchData()
+          this.afterDelete(selection, res)
+          this.$Message.info('删除成功')
+
+        })
+      }
     },
     afterDelete(id, res) {
     },
