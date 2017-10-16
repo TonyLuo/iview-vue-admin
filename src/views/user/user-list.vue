@@ -25,6 +25,16 @@
         operations: {
           width: 80,
           list: [
+//            {
+//              name: 'link',
+//              meta: {
+//                iconName: 'edit',
+//                link: function (row){
+//                  return `http://baidu.com/s?wd=${row.id}`
+//                },
+//                target:"_blank"
+//              }
+//            },
             {
               name: '编辑',
               meta: {

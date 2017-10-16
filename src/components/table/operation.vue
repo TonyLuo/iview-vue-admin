@@ -14,17 +14,27 @@
 </style>
 <template>
   <span>
-    <Icon v-for="item in options.list" v-if="checkPermit(item)"
-          :type="item.meta.iconName"
-          :color="item.meta.color"
-          class="operation-icon"
-          @click.native="item.meta.operation(row)"
-          :key="item.name"
-          size="16"></Icon>
+
+    <span v-for="item in options.list" v-if="checkPermit(item)" :key="item.name" class="operation-icon">
+      <a v-if="item.meta.link"
+         :href="item.meta.link(row)"
+         :target="item.meta.target">
+        <Icon :type="item.meta.iconName"
+              :color="item.meta.color"
+              class="operation-icon"
+              size="16"></Icon>
+      </a>
+      <Icon v-else
+            :type="item.meta.iconName"
+            :color="item.meta.color"
+            @click.native="item.meta.operation(row)"
+            size="16"></Icon>
+    </span>
+
   </span>
 </template>
 <script>
-  import { checkPermission } from '../../libs/util'
+  import {checkPermission} from '../../libs/util'
 
   export default {
     name: 'operation',
@@ -41,7 +51,7 @@
       }
     },
     methods: {
-      checkPermit (item) {
+      checkPermit(item) {
         return checkPermission(item)
       }
     }
