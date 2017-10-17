@@ -8,6 +8,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+var BabelPlugin = require("babel-webpack-plugin");
 
 var env = config.build.env
 
@@ -28,6 +29,12 @@ var webpackConfig = merge(baseWebpackConfig, {
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env
+    }),
+    new BabelPlugin({
+      test: /\.js$/,
+      presets: ['es2015'],
+      sourceMaps: false,
+      compact: true
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {

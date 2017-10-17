@@ -8,8 +8,10 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import App from './App'
 import store from './store'
-import util from './libs/util'
-import { routers } from './router'
+// import util from './libs/util'
+import {checkPermission} from './libs/util'
+
+import {routers} from './router'
 
 import formType from './components/form-type'
 
@@ -21,12 +23,22 @@ Vue.use(formType)
 Vue.config.productionTip = false
 
 
-function guardRoute (route, redirect, next) {
-  if (window.confirm(`Navigate to ${route.path}?`)) {
+function guardRoute(route, redirect, next) {
+  if (store.getters.token) {
     next()
-  } else if (window.confirm(`Redirect to /baz?`)) {
-    redirect('/baz')
+  } else {
+    next({path: '/login', query: {redirect: redirect.fullPath}});
   }
+  // if(checkPermission(route)){
+  //   next()
+  // }else{
+  //   redirect('/login')
+  // }
+  // if (window.confirm(`Navigate to ${route.path}?`)) {
+  //   next()
+  // } else if (window.confirm(`Redirect to /baz?`)) {
+  //   redirect('/baz')
+  // }
 }
 
 // 路由配置
@@ -38,9 +50,9 @@ const router = new VueRouter(RouterConfig)
 
 router.beforeEach((route, redirect, next) => {
   iView.LoadingBar.start()
-  util.title(route.meta.title)
+  // util.title(route.meta.title)
 
-  if (route.matched.some(m => m.meta.needGuard)) {
+  if (route.matched.some(m => m.meta.auth)) {
     guardRoute(route, redirect, next)
   } else {
     next()

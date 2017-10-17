@@ -11,9 +11,15 @@ const state = {
 const getters = {
   token: state => {
     // check whether the token still valid
-    if (state.token && state.token.expiresTime) {
-      if (state.token.expiresTime > new Date().getTime()) {
-        return state.token.userToken
+    let strToken = storage.state.storage.getItem('userToken')
+    let localToken = null
+    if (strToken) {
+      localToken = JSON.parse(strToken)
+    }
+    let token = localToken || state.token
+    if (token.expiresTime) {
+      if (token.expiresTime > new Date().getTime()) {
+        return token.userToken
       } else {
         return null
       }
@@ -50,16 +56,16 @@ const mutations = {
   }
 }
 const actions = {
-  initApp ({dispatch, commit}, data) {
+  initApp({dispatch, commit}, data) {
     dispatch('initUser')
 
   },
-  initUser ({dispatch, commit}, data) {
+  initUser({dispatch, commit}, data) {
     dispatch('initUserToken', data).then(() => {
       dispatch('setUser')
     })
   },
-  setUser ({dispatch, commit, state}) {
+  setUser({dispatch, commit, state}) {
     if (state.token.userToken) {
       user.getUserInfo().then(res => {
         commit(types.SET_USER, res.data)
@@ -68,7 +74,7 @@ const actions = {
     }
 
   },
-  initUserToken ({dispatch, commit}, token) {
+  initUserToken({dispatch, commit}, token) {
     // get token through backend api
     if (token && token.id_token) {
 
@@ -97,7 +103,7 @@ const actions = {
     }
   },
 
-  logout ({dispatch, commit}) {
+  logout({dispatch, commit}) {
     commit(types.CLEAR_USER)
 
   }
