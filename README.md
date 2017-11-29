@@ -36,8 +36,4 @@ npm run build --report
 
 This project is built base on iview@2.x, some code is from the iview official demo
 
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/Tqv5zWeYaBQdhLyP4uxLr6qe/TonyLuo/iview-vue-admin'>
-  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/Tqv5zWeYaBQdhLyP4uxLr6qe/TonyLuo/iview-vue-admin.svg' />
-</a>
-
 Copyright (c) 2017-present, Tony Luo
